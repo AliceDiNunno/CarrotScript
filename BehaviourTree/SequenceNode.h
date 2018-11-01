@@ -16,6 +16,10 @@ public:
     virtual bool run(MemoryManagement *apMemory) = 0;
 
     QStringList arguments;
+
+public:
+    QString line;
+    int lineNumber;
 };
 
 #endif // SEQUENCENODE_H

@@ -11,8 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _pInterpreter = new Interpreter();
     _pTimeOut = new QTimer();
     connect(_pTimeOut, SIGNAL(timeout()), this, SLOT(interpreterTimedOut()));
-    //_pBehaviourTreeBuild = new BehaviourTreeBuilding();
-   // _pOpcodes = new OpCodeParser();
+
     connect(_pInterpreter, SIGNAL(alert(QString)), this, SLOT(InterpreterAlert(QString)));
     connect(_pInterpreter, SIGNAL(info(QString)), this, SLOT(InterpreterInfo(QString)));
     connect(_pInterpreter, SIGNAL(error(QString)), this, SLOT(InterpreterError(QString)));
@@ -32,7 +31,15 @@ void MainWindow::on_loadButton_clicked()
                                                     tr("Carrot CloudScript (*.ccs)"));
     ui->filePathLabel->setText("Loaded: " + fileName);
 
-    _pInterpreter->loadFile(fileName);
+    QFile *f = new QFile(fileName);
+    if (f->open(QIODevice::ReadOnly))
+    {
+        emit InterpreterInfo("Loaded file: " + fileName);
+        QByteArray data = f->readAll();
+        _pInterpreter->parseAll(data);
+    }
+    else
+        emit InterpreterError("Unable to open file: " + fileName);
 }
 
 void MainWindow::InterpreterAlert(QString m)

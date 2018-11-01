@@ -33,17 +33,21 @@ SOURCES += \
     BehaviourTree/SequenceAction.cpp \
     BehaviourTree/SequenceNode.cpp \
     BehaviourTree/SequenceLoop.cpp \
-    BehaviourTree/MemoryManagement.cpp
+    BehaviourTree/MemoryManagement.cpp \
+    ComparisonMethod.cpp \
+    InterpreterConditionnal.cpp \
+    InterpreterVariable.cpp
 
 HEADERS += \
-        mainwindow.h \
+    mainwindow.h \
     interpreter.h \
     BehaviourTree/Sequence.hpp \
     BehaviourTree/SequenceConditionnal.h \
     BehaviourTree/SequenceAction.hpp \
     BehaviourTree/SequenceNode.h \
     BehaviourTree/SequenceLoop.hpp \
-    BehaviourTree/MemoryManagement.hpp
+    BehaviourTree/MemoryManagement.hpp \
+    ComparisonMethod.hpp
 
 FORMS += \
         mainwindow.ui

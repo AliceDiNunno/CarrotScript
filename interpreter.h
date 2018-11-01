@@ -6,30 +6,15 @@
 #include <QStack>
 #include "BehaviourTree/Sequence.hpp"
 #include "BehaviourTree/SequenceNode.h"
+#include "ComparisonMethod.hpp"
 
 class SequenceConditionnal;
 class Interpreter;
-
 struct OpcodeSet
 {
     QString opcode;
     SequenceNode *(Interpreter::*run)(QStringList);
 };
-
-struct ComparisonMethod
-{
-    QString ComparisonOperator;
-    bool (*compare)(QVariant, QVariant);
-};
-
-extern "C" {
-    bool isEqual(QVariant a, QVariant b);
-    bool isDifferent(QVariant a, QVariant b);
-    bool isLesserThan(QVariant a, QVariant b);
-    bool isGreaterThan(QVariant a, QVariant b);
-    bool isGreaterOrEqual(QVariant a, QVariant b);
-    bool isLesserOrEqual(QVariant a, QVariant b);
-}
 
 class QFile;
 class Interpreter: public QThread
@@ -39,11 +24,10 @@ class Interpreter: public QThread
 public:
     Interpreter();
     ~Interpreter();
-    void loadFile(QString aFileName);
+    void parseAll(QString );
 
 private:
     void run();
-    void parseAll(QString );
 
     SequenceNode *parseNext();
     bool compare(QVariant a, QVariant b, QString comparisonOperator);
