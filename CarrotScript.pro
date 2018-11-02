@@ -36,7 +36,8 @@ SOURCES += \
     BehaviourTree/MemoryManagement.cpp \
     ComparisonMethod.cpp \
     InterpreterConditionnal.cpp \
-    InterpreterVariable.cpp
+    InterpreterVariable.cpp \
+    Lexer.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -47,7 +48,8 @@ HEADERS += \
     BehaviourTree/SequenceNode.h \
     BehaviourTree/SequenceLoop.hpp \
     BehaviourTree/MemoryManagement.hpp \
-    ComparisonMethod.hpp
+    ComparisonMethod.hpp \
+    Lexer.hpp
 
 FORMS += \
         mainwindow.ui
