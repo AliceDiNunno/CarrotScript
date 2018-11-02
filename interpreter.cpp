@@ -49,7 +49,9 @@ void Interpreter::run()
 
 void Interpreter::parseAll(QString str)
 {
-    _instructions = str.split("\n");
+    QStringList lst = str.split("\n");
+
+    _instructions.append(lst);
 
     emit alert("Parsing: ");
     _pSequence->start = parseNext();
@@ -57,11 +59,11 @@ void Interpreter::parseAll(QString str)
 
 SequenceNode *Interpreter::parseNext()
 {
-    _scriptPosition++;
-    if (_scriptPosition >= _instructions.count())
+    if (_instructions.isEmpty())
         return nullptr;
+    _scriptPosition++;
 
-    QString currentInstruction = _instructions.at(_scriptPosition);
+    QString currentInstruction = _instructions.dequeue();
     currentInstruction.replace("\t", "");
     currentInstruction.replace("\r", "");
 

@@ -4,6 +4,7 @@
 #include <QString>
 #include <QThread>
 #include <QStack>
+#include <QQueue>
 #include "BehaviourTree/Sequence.hpp"
 #include "BehaviourTree/SequenceNode.h"
 #include "ComparisonMethod.hpp"
@@ -59,7 +60,7 @@ private: //Running
     Sequence *_pSequence;
 
 private: //Parsing
-    QStringList _instructions;
+    QQueue<QString> _instructions;
     QString _lastInstruction;
     int _scriptPosition;
 };
