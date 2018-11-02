@@ -1,6 +1,20 @@
 #include "interpreter.h"
 #include "BehaviourTree/SequenceLoop.hpp"
 
+bool Interpreter::compare(QVariant a, QVariant b, QString comparisonOperator)
+{
+    for (int iComparisonMethod = 0; iComparisonMethod < _comparisonMethods.count(); iComparisonMethod++)
+    {
+        ComparisonMethod cm = _comparisonMethods.at(iComparisonMethod);
+        if (cm.ComparisonOperator == comparisonOperator)
+        {
+            return cm.compare(a, b);
+        }
+    }
+    emit error("Unknown comparison operator");
+    return false;
+}
+
 SequenceNode *Interpreter::opcIf(QStringList aLine)
 {
     SequenceConditionnal *ifNode = new SequenceConditionnal();

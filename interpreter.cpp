@@ -127,19 +127,6 @@ QVariant Interpreter::getValue(QString str, MemoryManagement *pMemory)
     return pMemory->get(str);
 }
 
-bool Interpreter::compare(QVariant a, QVariant b, QString comparisonOperator)
-{
-    for (int iComparisonMethod = 0; iComparisonMethod < _comparisonMethods.count(); iComparisonMethod++)
-    {
-        ComparisonMethod cm = _comparisonMethods.at(iComparisonMethod);
-        if (cm.ComparisonOperator == comparisonOperator)
-        {
-            return cm.compare(a, b);
-        }
-    }
-    return false;
-}
-
 SequenceNode *Interpreter::opcMessage(QStringList aLine)
 {
     SequenceAction *setNode = new SequenceAction();
