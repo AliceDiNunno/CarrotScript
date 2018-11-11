@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     _pInterpreter = new Interpreter();
+    _pLexer = new Lexer();
+
     _pTimeOut = new QTimer();
     connect(_pTimeOut, SIGNAL(timeout()), this, SLOT(interpreterTimedOut()));
 
@@ -23,7 +25,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
+#include <iostream>
 void MainWindow::on_loadButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Script"),
@@ -34,9 +36,18 @@ void MainWindow::on_loadButton_clicked()
     QFile *f = new QFile(fileName);
     if (f->open(QIODevice::ReadOnly))
     {
-        emit InterpreterInfo("Loaded file: " + fileName);
-        QByteArray data = f->readAll();
-        _pInterpreter->parseAll(data);
+        try {
+            emit InterpreterInfo("Loaded file: " + fileName);
+            QByteArray data = f->readAll();
+            DataSanatizer sanitizer = DataSanatizer();
+            data = sanitizer.sanitize(data);
+            std::cout << QString(data).toStdString() << std::endl;
+            _pLexer = new Lexer();
+            _pLexer->parseFile(data);
+            //_pInterpreter->parseAll(data);
+        } catch (UnknownTokenException ) {
+            emit InterpreterError("Unexpected token");
+        }
     }
     else
         emit InterpreterError("Unable to open file: " + fileName);

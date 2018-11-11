@@ -56,13 +56,13 @@ signals:
 private: //Running
     QList<OpcodeSet> _opcodes;
     QList<ComparisonMethod> _comparisonMethods;
-    QStack<SequenceConditionnal *> _conditionnals;
     Sequence *_pSequence;
 
 private: //Parsing
     QQueue<QString> _instructions;
     QString _lastInstruction;
     int _scriptPosition;
+    QStack<SequenceConditionnal *> _conditionnals;
 };
 
 #endif // INTERPRETER_H

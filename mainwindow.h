@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "interpreter.h"
+#include "Lexer.hpp"
+#include "DataSanatizer.hpp"
+#include "ByteReader.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +36,7 @@ private:
     Ui::MainWindow *ui;
     Interpreter *_pInterpreter;
     QTimer *_pTimeOut;
+    Lexer *_pLexer;
 };
 
 #endif // MAINWINDOW_H

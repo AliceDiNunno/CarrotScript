@@ -37,7 +37,9 @@ SOURCES += \
     ComparisonMethod.cpp \
     InterpreterConditionnal.cpp \
     InterpreterVariable.cpp \
-    Lexer.cpp
+    Lexer.cpp \
+    ByteReader.cpp \
+    DataSanatizer.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -49,7 +51,9 @@ HEADERS += \
     BehaviourTree/SequenceLoop.hpp \
     BehaviourTree/MemoryManagement.hpp \
     ComparisonMethod.hpp \
-    Lexer.hpp
+    Lexer.hpp \
+    ByteReader.hpp \
+    DataSanatizer.hpp
 
 FORMS += \
         mainwindow.ui
