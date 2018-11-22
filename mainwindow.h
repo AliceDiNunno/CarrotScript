@@ -3,15 +3,14 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include "interpreter.h"
 #include "Lexer.hpp"
-#include "DataSanatizer.hpp"
-#include "ByteReader.hpp"
+#include "Parser.hpp"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
+class BuildExecutionTree;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -34,9 +33,10 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Interpreter *_pInterpreter;
     QTimer *_pTimeOut;
     Lexer *_pLexer;
+    Parser *_pTheMotherfucking;
+    ParsingTreeEntryPoint * _pTree;
 };
 
 #endif // MAINWINDOW_H

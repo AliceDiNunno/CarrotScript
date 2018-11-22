@@ -1,52 +1,81 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
+#include <QDateTime>
 #include <QTimer>
+#include <QDebug>
+#include <QString>
+#include <iostream>
+#include "UnknownTokenException.hpp"
+#include "Parser.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    _pInterpreter = new Interpreter();
+
     _pLexer = new Lexer();
+    _pTheMotherfucking = new Parser();
 
     _pTimeOut = new QTimer();
     connect(_pTimeOut, SIGNAL(timeout()), this, SLOT(interpreterTimedOut()));
 
-    connect(_pInterpreter, SIGNAL(alert(QString)), this, SLOT(InterpreterAlert(QString)));
-    connect(_pInterpreter, SIGNAL(info(QString)), this, SLOT(InterpreterInfo(QString)));
-    connect(_pInterpreter, SIGNAL(error(QString)), this, SLOT(InterpreterError(QString)));
-    connect(_pInterpreter, SIGNAL(message(QString)), this, SLOT(InterpreterMessage(QString)));
-    connect(_pInterpreter, SIGNAL(finished()), _pTimeOut, SLOT(stop()));
+    on_loadButton_clicked();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-#include <iostream>
+
 void MainWindow::on_loadButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Script"),
-                                                    "~",
-                                                    tr("Carrot CloudScript (*.ccs)"));
-    ui->filePathLabel->setText("Loaded: " + fileName);
+    QString fileName = "/Users/alice/CarrotScript/CCS/logic.ccs";
 
     QFile *f = new QFile(fileName);
     if (f->open(QIODevice::ReadOnly))
     {
-        try {
-            emit InterpreterInfo("Loaded file: " + fileName);
+        try
+        {
             QByteArray data = f->readAll();
-            DataSanatizer sanitizer = DataSanatizer();
-            data = sanitizer.sanitize(data);
-            std::cout << QString(data).toStdString() << std::endl;
+            QTime executionTime;
+            executionTime.start();
+
+            //qDebug() << "start";
             _pLexer = new Lexer();
+            //qDebug() << "lexer start";
             _pLexer->parseFile(data);
-            //_pInterpreter->parseAll(data);
-        } catch (UnknownTokenException ) {
+            QList<QList<Token>> tokens = _pLexer->getAllTokens();
+            for (int iLine = 0; iLine < tokens.count(); iLine++)
+            {
+                for (int iToken = 0; iToken < tokens.at(iLine).count(); iToken++)
+                {
+                    QString str = QString("%1: %2").arg(tts(tokens.at(iLine).at(iToken).type), QString(tokens.at(iLine).at(iToken).content));
+                    //qDebug(str.toStdString().c_str());
+                }
+            }
+            //qDebug() << "parsing start";
+            ParsingTreeEntryPoint *entrypoint = _pTheMotherfucking->parse(_pLexer->getAllTokens());
+            _pTree = entrypoint;
+            emit InterpreterInfo(QString("spent time: %1 ms").arg(executionTime.elapsed()));
+
+        }
+        /*catch (UnterminatedQuoteException )
+        {
+            emit InterpreterError("Unterminated quote");
+        }*/
+        catch (UnknownTokenException )
+        {
+            emit InterpreterError("Unknown token type");
+        }
+        /*catch (UnexpectedTokenException )
+        {
             emit InterpreterError("Unexpected token");
+        }*/
+        catch (std::exception )
+        {
+            emit InterpreterError("Unknown Exception");
         }
     }
     else
@@ -76,17 +105,16 @@ void MainWindow::InterpreterMessage(QString m)
 
 void MainWindow::interpreterTimedOut()
 {
-    _pInterpreter->blockSignals(true);
-    _pInterpreter->terminate();
     InterpreterError("Stopped due to timeout");
 }
 
 void MainWindow::on_runButton_clicked()
 {
+    MemoryManagement *pMemory = new MemoryManagement();
+    connect(pMemory, SIGNAL(message(QString )), this, SLOT(InterpreterMessage(QString )));
+    connect(pMemory, SIGNAL(info(QString )), this, SLOT(InterpreterInfo(QString )));
+    _pTree->execute(pMemory);
     _pTimeOut->start();
     _pTimeOut->setSingleShot(true);
     _pTimeOut->setInterval(1000);
-
-    _pInterpreter->blockSignals(false);
-    _pInterpreter->start();
 }

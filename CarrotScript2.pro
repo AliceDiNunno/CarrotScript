@@ -22,38 +22,55 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-CONFIG += c++11
+CONFIG += c++17
 
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    interpreter.cpp \
-    BehaviourTree/Sequence.cpp \
-    BehaviourTree/SequenceConditionnal.cpp \
-    BehaviourTree/SequenceAction.cpp \
-    BehaviourTree/SequenceNode.cpp \
-    BehaviourTree/SequenceLoop.cpp \
-    BehaviourTree/MemoryManagement.cpp \
-    ComparisonMethod.cpp \
-    InterpreterConditionnal.cpp \
-    InterpreterVariable.cpp \
     Lexer.cpp \
-    ByteReader.cpp \
-    DataSanatizer.cpp
+    Parser.cpp \
+    Token.cpp \
+    CarrotScriptException.cpp \
+    UnknownTokenException.cpp \
+    TokenType.cpp \
+    MemoryManagement.cpp
 
 HEADERS += \
     mainwindow.h \
-    interpreter.h \
-    BehaviourTree/Sequence.hpp \
-    BehaviourTree/SequenceConditionnal.h \
-    BehaviourTree/SequenceAction.hpp \
-    BehaviourTree/SequenceNode.h \
-    BehaviourTree/SequenceLoop.hpp \
-    BehaviourTree/MemoryManagement.hpp \
-    ComparisonMethod.hpp \
     Lexer.hpp \
-    ByteReader.hpp \
-    DataSanatizer.hpp
+    Parser.hpp \
+    Token.hpp \
+    CarrotScriptException.hpp \
+    UnknownTokenException.hpp \
+    TokenType.hpp \
+    TokenizeItem.hpp \
+    ParsingTreeOperationType.hpp \
+    ParsingTreeValueType.hpp \
+    ParsingTreeValueComparisonType.hpp \
+    ParsingTreeExecutable.hpp \
+    ParsingTreeEntryPoint.hpp \
+    ParsingTreeValue.hpp \
+    ParsingTreeString.hpp \
+    ParsingTreeIdentifier.hpp \
+    ParsingTreeInteger.hpp \
+    ParsingTreeFloat.hpp \
+    ParsingTreeBoolean.hpp \
+    ParsingTreeArray.hpp \
+    ParsingTreeAccessor.hpp \
+    ParsingTreeComparison.hpp \
+    ParsingTreeFunctionCall.hpp \
+    ParsingTreeFunctionDeclaration.hpp \
+    ParsingTreeAssignement.hpp \
+    ParsingTreeKeywordType.hpp \
+    ParsingTreeKeyword.hpp \
+    ParsingTreeCondition.hpp \
+    ParsingTreeEntryPointPriority.hpp \
+    ParsingTreeCalculateValuePriority.hpp \
+    MemoryManagement.hpp \
+    ScriptMemoryBinding.hpp \
+    MemoryScriptVariable.hpp \
+    ScriptClassBinding.hpp \
+    ParsingTreeOperation.hpp
 
 FORMS += \
         mainwindow.ui

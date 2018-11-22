@@ -3,32 +3,9 @@
 
 #include <QString>
 #include <QRegularExpression>
-
-enum Token
-{
-    T_Identifier,
-    T_Keyword,
-    T_Separator,
-    T_Operation,
-    T_Assignement,
-    T_Comparison,
-    T_FloatLitteral,
-    T_NumericLitteral,
-    T_StringLitteral
-};
-
-class Lexer;
-struct TokenizeItem
-{
-    Token tokenIfMatch;
-    bool (Lexer::*check)(QByteArray );
-
-};
-
-class UnknownTokenException: public std::exception
-{
-
-};
+#include <QStack>
+#include "Token.hpp"
+#include "TokenizeItem.hpp"
 
 class Lexer
 {
@@ -37,32 +14,47 @@ public:
 
     void parseFile(QByteArray );
     Token tokenize(QByteArray );
-    QList<QList<QPair<Token, QByteArray>>> getAllTokens();
+    QList<QList<Token>> getAllTokens();
 
 private:
-    bool isIdentifier(QByteArray );
+    QList<Token> parseLine(QByteArray , int line);
+    Token readToken(QByteArray, int line, int *column, Token *lastToken);
+    QPair<TokenType, QByteArray> readIdentifier(QByteArray currentLine, int line, int *column);
+    QPair<TokenType, QByteArray> readNumber(QByteArray currentLine, int line, int *column);
+    QPair<TokenType, QByteArray> readSymbol(QByteArray, int line, int *column, Token *lastToken);
+    QPair<TokenType, QByteArray> readQuote(QByteArray, int line, int *column);
+    void skipSpaces(QByteArray, int *column);
+    bool isAcceptedSymbol(QChar c);
+
+private:
+    TokenType getSymbol(QByteArray , Token *lastToken);
+
     bool isKeyword(QByteArray );
-    bool isOperationOperator(QByteArray );
-    bool isAssignmentOpererator(QByteArray );
-    bool isComparisonOperator(QByteArray );
-    bool isOperator(QByteArray );
-    bool isSeparator(QByteArray );
+    bool isIdentifier(QByteArray );
     bool isStringLitteral(QByteArray );
-    bool isIntegerLitteral(QByteArray );
     bool isFloatLitteral(QByteArray );
+    bool isNumericLitteral(QByteArray );
+    bool isBoolLitteral(QByteArray );
+    bool isAccessSeparator(QByteArray );
+    bool isSeparator(QByteArray );
+    bool isAssignmentOpererator(QByteArray );
+    bool isOperationOperator(QByteArray );
+    bool isComparisonOperator(QByteArray );
 
 private:
     QList<TokenizeItem> availableTokens;
 
     QRegularExpression regexpPureNumber;
+    QRegularExpression regexpFloat;
     QRegularExpression regexpPureString;
     QRegularExpression regexpStartsWithNumber;
     QRegularExpression regexpIdentifierAcceptedCharacters;
 
 private:
     //Order is:
-    //Lines<Tokens<TokenType, Data>>
-    QList<QList<QPair<Token, QByteArray>>> tokenizedLines;
+    //Lines<Tokens<Token>>
+    QList<QList<Token>> tokenizedLines;
+    QStack<TokenType> separatorPriority;
 };
 
 #endif // LEXER_HPP
