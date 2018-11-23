@@ -70,7 +70,8 @@ HEADERS += \
     ScriptMemoryBinding.hpp \
     MemoryScriptVariable.hpp \
     ScriptClassBinding.hpp \
-    ParsingTreeOperation.hpp
+    ParsingTreeOperation.hpp \
+    ParsingTreeVariabeRead.hpp
 
 FORMS += \
         mainwindow.ui

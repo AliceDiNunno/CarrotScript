@@ -5,6 +5,7 @@
 #include "ParsingTreeInteger.hpp"
 #include "ParsingTreeArray.hpp"
 #include "ParsingTreeFloat.hpp"
+#include "ParsingTreeVariabeRead.hpp"
 
 MemoryManagement::MemoryManagement()
 {
@@ -39,21 +40,23 @@ ParsingTreeValue *MemoryManagement::readValue(ParsingTreeAccessor *name)
     return nullptr;
 }
 
+
+// Check For Functions
 ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeIdentifier *ids, QList<ParsingTreeValue *> args)
 {
-    ParsingTreeAccessor *accs = dynamic_cast<ParsingTreeAccessor *>(ids);
-    if (translateValue(accs->name) == "message")
+    if (translateValue(ids->name) == "message")
     {
         QList<QVariant > ptvlist = QList<QVariant >();
         for (int iArg = 0; iArg < args.count(); iArg++)
         {
-            if (ParsingTreeIdentifier *pti = dynamic_cast<ParsingTreeIdentifier *>(args.at(iArg)))
+            ParsingTreeValue *pCurrentValue = args.at(iArg);
+            if (ParsingTreeVariabeRead *ptvr = dynamic_cast<ParsingTreeVariabeRead *>(pCurrentValue))
             {
-                ptvlist << translateValue(pti->execute(this));
+                ptvlist << translateValue(readValue(ptvr->id));
             }
             else
             {
-                ptvlist << translateValue(args.at(iArg));
+                ptvlist << translateValue(pCurrentValue);
             }
         }
 
@@ -121,6 +124,7 @@ QVariant MemoryManagement::translateValue(ParsingTreeValue *val)
     }
     else
     {
+        return "{{{{error}}}}";
         qDebug() << "ERR TRANSLATE";
         //err
     }

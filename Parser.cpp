@@ -15,6 +15,7 @@
 #include "ParsingTreeEntryPointPriority.hpp"
 #include "ParsingTreeValueType.hpp"
 #include "ParsingTreeValueComparisonType.hpp"
+#include "ParsingTreeVariabeRead.hpp"
 
 bool isTokenEnter(TokenType t)
 {
@@ -100,6 +101,23 @@ ParsingTreeFunctionCall *Parser::makeFunctionCall(QList<Token> tokens)
     return fnc;
 }
 
+ParsingTreeAccessor *makeAccessorFromIdentifier(ParsingTreeIdentifier *ids)
+{
+    ParsingTreeAccessor *pta = dynamic_cast<ParsingTreeAccessor *>(ids);
+    if (!pta)
+    {
+        pta = new ParsingTreeAccessor();
+        pta->child = nullptr;
+        pta->fallback = ids->fallback;
+        pta->line = ids->line;
+        pta->lineNumber = ids->lineNumber;
+        pta->name = ids->name;
+        pta->next = ids->next;
+        pta->success = ids->success;
+    }
+    return pta;
+}
+
 QList<ParsingTreeValue *> Parser::makeFunctionParameters(Token t)
 {
     QList<ParsingTreeValue *> values;
@@ -123,6 +141,7 @@ QList<ParsingTreeValue *> Parser::makeFunctionParameters(Token t)
     for(int i = 0; i < tokenParameters.count(); i++)
     {
         ParsingTreeValue *pv = makeValue(tokenParameters.at(i));
+
         values << pv;
     }
 
@@ -286,19 +305,6 @@ ParsingTreeArray *Parser::makeArray(QList<Token> tokens)
 
     return pta;
 }
-
-struct ParsingTreeVariabeRead: public ParsingTreeValue
-{
-
-    ParsingTreeAccessor *id;
-
-    ParsingTreeValue *execute(MemoryManagement *pMemory)
-    {
-//        qDebug() << "READ";
-        executeNext(pMemory);
-        return pMemory->readValue(id);
-    }
-};
 
 ParsingTreeValue *Parser::readVariable(QList<Token> t)
 {

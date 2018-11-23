@@ -9,10 +9,9 @@ struct ParsingTreeArray: public ParsingTreeValue
 {
     QList<ParsingTreeValue *> values;
 
-    virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
+    virtual ParsingTreeValue *execute(MemoryManagement *)
     {
-        executeNext(pMemory);
-        return this;
+        return nullptr;
     }
 };
 

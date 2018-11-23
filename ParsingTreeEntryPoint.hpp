@@ -7,8 +7,6 @@ struct ParsingTreeEntryPoint: ParsingTreeValue
 {
 public:
     virtual ~ParsingTreeEntryPoint() {}
-
-
 };
 
 
