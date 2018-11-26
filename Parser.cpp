@@ -181,7 +181,9 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
 
     ParsingTreeAccessor *accessor = makeAccessor(leftTokens);
 
-    if (token.content != "++" && token.content != "--")
+
+    //TODO: manage minus operator
+    if (token.content != "++" && token.content != "--" && token.content != "+=" && token.content != "-=" && token.content != "/=" && token.content != "*=")
     {
         QList<Token> rightTokens = tokens.mid(position + 1, tokens.count());
 
@@ -190,7 +192,7 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
         ass->symbol = token.content;
         ass->from = value;
     }
-    else
+    else if (token.content == "++" || token.content == "--")
     {
         Token tok;
         tok.column = token.column;
@@ -202,7 +204,55 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
         ParsingTreeValue *value = makeValue({tok});
         ass->symbol = tok.content;
         ass->from = value;
+        /////////////////////
+        QList<Token> rightTokens = tokens.mid(position + 1, tokens.count());
 
+        ass->symbol = "=";
+        Token tokOp;
+        tokOp.column = token.column;
+        tokOp.lineNumber = token.lineNumber;
+        tokOp.lineStr = token.lineStr;
+        tokOp.type = T_Operation;
+        if (token.content == "++")
+        {
+            tokOp.content = "+";
+        }
+        else if (token.content == "--")
+        {
+            tokOp.content = "-";
+        }
+        ass->from = makeOperation(leftTokens, tokOp, {tok});
+
+    }
+    else
+    {
+        QList<Token> rightTokens = tokens.mid(position + 1, tokens.count());
+
+        ParsingTreeValue *value = makeValue(rightTokens);
+
+        ass->symbol = "=";
+        Token tok;
+        tok.column = token.column;
+        tok.lineNumber = token.lineNumber;
+        tok.lineStr = token.lineStr;
+        tok.type = T_Operation;
+        if (token.content == "+=")
+        {
+            tok.content = "+";
+        }
+        else if (token.content == "-=")
+        {
+            tok.content = "-";
+        }
+        else if (token.content == "/=")
+        {
+            tok.content = "/";
+        }
+        else if (token.content == "*=")
+        {
+            tok.content = "*";
+        }
+        ass->from = makeOperation(leftTokens, tok, rightTokens);
     }
 
     ass->to = accessor;

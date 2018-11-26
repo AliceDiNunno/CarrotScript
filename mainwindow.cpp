@@ -31,7 +31,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_loadButton_clicked()
 {
-    QString fileName = "/Users/alice/CarrotScript/CCS/logic.ccs";
+    QString fileName = "/Users/alice/CarrotScript/CCS/var.ccs";
 
     QFile *f = new QFile(fileName);
     if (f->open(QIODevice::ReadOnly))
