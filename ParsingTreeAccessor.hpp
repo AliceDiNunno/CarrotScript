@@ -5,7 +5,12 @@
 
 struct ParsingTreeAccessor: public ParsingTreeIdentifier
 {
-    ParsingTreeAccessor *child; // User -> info -> displayName
+    ParsingTreeAccessor()
+    {
+        debugName = "ParsingTreeAccessor";
+    }
+
+    ParsingTreeAccessor *child = nullptr; // User -> info -> displayName
 };
 
 #endif // PARSINGTREEACCESSOR_HPP

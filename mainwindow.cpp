@@ -113,6 +113,7 @@ void MainWindow::on_runButton_clicked()
     MemoryManagement *pMemory = new MemoryManagement();
     connect(pMemory, SIGNAL(message(QString )), this, SLOT(InterpreterMessage(QString )));
     connect(pMemory, SIGNAL(info(QString )), this, SLOT(InterpreterInfo(QString )));
+    connect(pMemory, SIGNAL(warn(QString )), this, SLOT(InterpreterAlert(QString )));
     _pTree->execute(pMemory);
     _pTimeOut->start();
     _pTimeOut->setSingleShot(true);

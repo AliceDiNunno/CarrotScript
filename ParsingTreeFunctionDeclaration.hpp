@@ -11,9 +11,14 @@ struct ParsingTreeFunctionDeclaration: public ParsingTreeEntryPoint
     QByteArray name;
     QList<QByteArray> variableNames;
 
+    ParsingTreeFunctionDeclaration()
+    {
+        debugName = "ParsingTreeFunctionDeclaration";
+    }
+
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
     {
-        qDebug() << "Declare function";
+        //qDebug() << "Declare function";
         executeNext(pMemory);
         return nullptr;
     }

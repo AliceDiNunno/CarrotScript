@@ -9,6 +9,11 @@ struct ParsingTreeArray: public ParsingTreeValue
 {
     QList<ParsingTreeValue *> values;
 
+    ParsingTreeArray()
+    {
+        debugName = "ParsingTreeArray";
+    }
+
     virtual ParsingTreeValue *execute(MemoryManagement *)
     {
         return nullptr;

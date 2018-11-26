@@ -10,8 +10,11 @@ static int myline = 0;
 
 struct ParsingTreeExecutable
 {
+    QString debugName;
+
     ParsingTreeExecutable()
     {
+        debugName = "ParsingTreeExecutable";
         success = nullptr;
         fallback = nullptr;
         next = nullptr;
@@ -23,38 +26,11 @@ struct ParsingTreeExecutable
 
     virtual ParsingTreeValue *execute(MemoryManagement *) = 0;
 
-    ParsingTreeValue *executeNext(MemoryManagement *apMem)
-    {
-        if (next)
-        {
-            myline++;
-            qDebug() << "NEXT: " << line;
-            return next->execute(apMem);
-        }
-        return nullptr;
-    }
+    void checkScope(MemoryManagement *apMem);
 
-    ParsingTreeValue *executeFallback(MemoryManagement *apMem)
-    {
-        if (fallback)
-        {
-            myline++;
-            qDebug() << "FAIL: " << line;
-            return fallback->execute(apMem);
-        }
-        return nullptr;
-    }
-
-    ParsingTreeValue *executeSuccess(MemoryManagement *apMem)
-    {
-        if (success)
-        {
-            myline++;
-            qDebug() << "SUCCESS: " << line;
-            return success->execute(apMem);
-        }
-        return nullptr;
-    }
+    ParsingTreeValue *executeNext(MemoryManagement *apMem);
+    ParsingTreeValue *executeFallback(MemoryManagement *apMem);
+    ParsingTreeValue *executeSuccess(MemoryManagement *apMem);
 
     ParsingTreeExecutable *success;
     ParsingTreeExecutable *fallback;
@@ -62,6 +38,10 @@ struct ParsingTreeExecutable
 
     int lineNumber;
     QString line;
+
+    int scopeChange = 0;
+    bool didEnter = false;
+    int scopeCheck = 0;
 };
 
 #endif // PARSINGTREEEXECUTABLE_HPP

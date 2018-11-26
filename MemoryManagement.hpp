@@ -35,6 +35,7 @@ private:
 signals:
     void message(QString );
     void info(QString );
+    void warn(QString );
 
 private:
     QMap<QByteArray, ScriptClassBinding *> bindings;

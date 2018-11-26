@@ -9,8 +9,14 @@ struct ParsingTreeCondition: public ParsingTreeKeyword
 {
     ParsingTreeComparison *condition = nullptr;
 
+    ParsingTreeCondition()
+    {
+        debugName = "ParsingTreeCondition";
+    }
+
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
     {
+        //qDebug() << "exec: " << line << lineNumber;
         if (condition)
         {
             auto run = [this, pMemory]()
@@ -27,12 +33,12 @@ struct ParsingTreeCondition: public ParsingTreeKeyword
             {
                 if (run())
                 {
-                    qDebug() << "IF SUCCESS";
+                   // qDebug() << "IF SUCCESS";
                     executeSuccess(pMemory);
                 }
                 else
                 {
-                    qDebug() << "IF FAIL";
+                    //qDebug() << "IF FAIL";
                     executeFallback(pMemory);
                 }
             }
@@ -40,21 +46,21 @@ struct ParsingTreeCondition: public ParsingTreeKeyword
             {
                 while(run())
                 {
-                    qDebug() << "IN LOOP";
+                   // qDebug() << "IN LOOP";
                     executeSuccess(pMemory);
                 }
             }
             else
             {
                 //Err
-                qDebug() << "NO CAN DO";
+              //  qDebug() << "NO CAN DO";
             }
         }
         else
         {
-            qDebug() << "UNKNOWN CONDITION";
+          //  qDebug() << "UNKNOWN CONDITION";
         }
-        qDebug() << "GO NEXT";
+        //qDebug() << "GO NEXT";
         executeNext(pMemory);
 
         return nullptr;

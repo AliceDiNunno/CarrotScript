@@ -5,15 +5,25 @@
 #include "ParsingTreeEntryPoint.hpp"
 #include "ParsingTreeValue.hpp"
 #include "ParsingTreeKeywordType.hpp"
+#include "MemoryManagement.hpp"
 
 struct ParsingTreeKeyword: public ParsingTreeEntryPoint
 {
     ParsingTreeKeywordType type;
     ParsingTreeValue *value;
 
+    ParsingTreeKeyword()
+    {
+        debugName = "ParsingTreeKeyword";
+    }
+
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
     {
-        qDebug() << "Some Keyword " << type;
+        //qDebug() << "Some Keyword " << type;
+        if (type == PTKT_End)
+        {
+            pMemory->exitScope();
+        }
         executeNext(pMemory);
         return nullptr;
     }

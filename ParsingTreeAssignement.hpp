@@ -13,9 +13,14 @@ struct ParsingTreeAssignment: public ParsingTreeEntryPoint
     ParsingTreeValue *from;
     ParsingTreeAccessor *to;
 
+    ParsingTreeAssignment()
+    {
+        debugName = "ParsingTreeAssignment";
+    }
+
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
     {
-        qDebug() << "ASSIGN";
+        //qDebug() << "ASSIGN";
 
         pMemory->setValue(to, from->execute(pMemory));
 

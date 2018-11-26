@@ -6,10 +6,11 @@
 #include "ParsingTreeArray.hpp"
 #include "ParsingTreeFloat.hpp"
 #include "ParsingTreeVariabeRead.hpp"
+#include "ParsingTreeOperation.hpp"
 
 MemoryManagement::MemoryManagement()
 {
-
+    scopes.append(new QList<ScriptVariable *>());
 }
 
 MemoryManagement::~MemoryManagement()
@@ -56,7 +57,16 @@ ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeIdentifier *ids, QLi
             }
             else
             {
-                ptvlist << translateValue(pCurrentValue);
+                if (ParsingTreeOperation *pto = dynamic_cast<ParsingTreeOperation *>(pCurrentValue))
+                {
+                    ParsingTreeValue *ptv = pto->execute(this);
+                    //qDebug() << "PTV" << translateValue(ptv);
+                    ptvlist << translateValue(ptv);
+                }
+                else
+                {
+                    ptvlist << translateValue(pCurrentValue);
+                }
             }
         }
 
@@ -82,7 +92,8 @@ void MemoryManagement::setValue(ParsingTreeAccessor *accs, ParsingTreeValue *val
 
     if (accs->child == nullptr)
     {
-        sv.first = translateValue(accs->execute(this)).toByteArray();
+        ParsingTreeValue *pName = accs->execute(this);
+        sv.first = translateValue(pName).toByteArray();
     }
     insert(sv);
 }
@@ -125,7 +136,6 @@ QVariant MemoryManagement::translateValue(ParsingTreeValue *val)
     else
     {
         return "{{{{error}}}}";
-        qDebug() << "ERR TRANSLATE";
         //err
     }
 
@@ -134,8 +144,6 @@ QVariant MemoryManagement::translateValue(ParsingTreeValue *val)
 
 void MemoryManagement::insert(ScriptVariable sv)
 {
-    if (scopes.isEmpty())
-        scopes.append(new QList<ScriptVariable *>());
     for (int iScope = 0; iScope < scopes.count(); iScope++)
     {
         QList<ScriptVariable *> *vars = scopes.at(iScope);
@@ -164,11 +172,14 @@ void MemoryManagement::insert(ScriptVariable sv)
 void MemoryManagement::enterScope()
 {
     scopes.append(new QList<ScriptVariable *>());
-    emit info(QString("Enter scope: %1").arg(scopes.count()));
+    qDebug() << (QString("Enter scope: %1").arg(scopes.count()));
 }
 
 void MemoryManagement::exitScope()
 {
-    emit info(QString("Exit scope: %1").arg(scopes.count()));
-    scopes.removeLast();
+    qDebug() << (QString("Exit scope: %1").arg(scopes.count()));
+    if (scopes.count() <= 1)
+        qDebug() << ("CANNOT EXIT SCOPE"); //ERR
+    else
+        scopes.removeLast();
 }

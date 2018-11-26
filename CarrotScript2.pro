@@ -33,7 +33,12 @@ SOURCES += \
     CarrotScriptException.cpp \
     UnknownTokenException.cpp \
     TokenType.cpp \
-    MemoryManagement.cpp
+    MemoryManagement.cpp \
+    ParsingTreeBoolean.cpp \
+    ParsingTreeFloat.cpp \
+    ParsingTreeInteger.cpp \
+    ParsingTreeString.cpp \
+    ParsingTreeExecutable.cpp
 
 HEADERS += \
     mainwindow.h \

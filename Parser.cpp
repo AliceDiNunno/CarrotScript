@@ -499,6 +499,7 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
 
     keyword->type = getType(tokens.at(0).content);
     tokens = tokens.mid(1, tokens.count());
+
     if (tokens.count() == 1 && tokens.at(0).subTokens.count() > 0 && tokens.at(0).content == "()")
         tokens = tokens.at(0).subTokens;
 
@@ -549,7 +550,7 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
         }
         else
         {
-            qDebug() << "COMPARISON, VAR AND BOOL FAIL" << MemoryManagement::translateValue(ptv);
+            //qDebug() << "COMPARISON, VAR AND BOOL FAIL" << MemoryManagement::translateValue(ptv);
         }
 
     }
@@ -682,6 +683,8 @@ ParsingTreeEntryPoint *joinCondition(QList<ParsingTreeEntryPoint *> eps, int *fr
             if (currentCondition->type == PTKT_If && kwrd->type == PTKT_Else)
             {
                 shouldSwitchToElse = true;
+                kwrd->type = PTKT_End;
+                lastOne->next = kwrd;
                 continue;
             }
             else if ((currentCondition->type != PTKT_If && kwrd->type == PTKT_Else) ||
@@ -691,7 +694,7 @@ ParsingTreeEntryPoint *joinCondition(QList<ParsingTreeEntryPoint *> eps, int *fr
             }
             else if (kwrd->type == PTKT_End)
             {
-
+                lastOne->next = kwrd;
                 break;
             }
             else if (currentCondition != pCurrentEntryPoint)
@@ -702,11 +705,13 @@ ParsingTreeEntryPoint *joinCondition(QList<ParsingTreeEntryPoint *> eps, int *fr
 
         if (shouldStart)
         {
+            pCurrentEntryPoint->scopeChange = 1;
             shouldStart = false;
             currentCondition->success = pCurrentEntryPoint;
         }
         else if (shouldSwitchToElse)
         {
+            pCurrentEntryPoint->scopeChange = 1;
             shouldSwitchToElse = false;
             currentCondition->fallback = pCurrentEntryPoint;
         }
@@ -804,11 +809,14 @@ ParsingTreeEntryPoint *Parser::join(QList<ParsingTreeEntryPoint *> eps)
             }
 
 //            qDebug() << "OTHER: " << pCurrentEntryPoint->line;
-            pLastEntryPoint->next = pCurrentEntryPoint;
-            pLastEntryPoint = pCurrentEntryPoint;
+            if (pCurrentEntryPoint != pLastEntryPoint)
+            {
+                pLastEntryPoint->next = pCurrentEntryPoint;
+                pLastEntryPoint = pCurrentEntryPoint;
+            }
         }
     }
-    debugIt(eps.first());
+   // debugIt(eps.first());
     return eps.first();
 }
 

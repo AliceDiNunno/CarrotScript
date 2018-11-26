@@ -8,6 +8,11 @@ struct ParsingTreeIdentifier: public ParsingTreeValue
 {
     ParsingTreeValue *name;
 
+    ParsingTreeIdentifier()
+    {
+        debugName = "ParsingTreeIdentifier";
+    }
+
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
     {
         executeNext(pMemory);

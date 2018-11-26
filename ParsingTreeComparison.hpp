@@ -12,6 +12,11 @@ struct ParsingTreeComparison: public ParsingTreeValue
     ParsingTreeValueComparisonType type;
     ParsingTreeValue *right;
 
+    ParsingTreeComparison()
+    {
+        debugName = "ParsingTreeComparison";
+    }
+
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
     {
         QVariant l = MemoryManagement::translateValue(left->execute(pMemory));

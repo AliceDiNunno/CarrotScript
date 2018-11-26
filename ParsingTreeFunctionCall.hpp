@@ -14,6 +14,11 @@ struct ParsingTreeFunctionCall: public ParsingTreeEntryPoint
     QList<ParsingTreeValue *> arguments;
     ParsingTreeAccessor *source;
 
+    ParsingTreeFunctionCall()
+    {
+        debugName = "ParsingTreeFunctionCall";
+    }
+
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory) override
     {
         ParsingTreeValue *pResult = pMemory->callFunction(source, arguments);
