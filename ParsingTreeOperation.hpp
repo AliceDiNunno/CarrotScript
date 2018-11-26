@@ -38,8 +38,13 @@ struct ParsingTreeOperation: public ParsingTreeValue
 
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
     {
-        ParsingTreeValue *lExecute = left->execute(pMemory);
-        ParsingTreeValue *rExecute = right->execute(pMemory);
+        ParsingTreeValue *lExecute = nullptr;
+        ParsingTreeValue *rExecute = nullptr;
+
+        if (left != nullptr)
+            lExecute = left->execute(pMemory);
+        if (right != nullptr)
+            rExecute = right->execute(pMemory);
 
         if (lExecute == nullptr)
         {

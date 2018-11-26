@@ -153,13 +153,15 @@ QPair<TokenType, QByteArray> Lexer::readNumber(QByteArray currentLine, int line,
         if ((*column) >= currentLine.count())
             break;
         currentChar = currentLine.at(*column);
-        if (currentChar.isNumber())
+        if (currentChar.isNumber() ||
+           (currentChar == "-" && currentIdentifier.isEmpty()))
         {
             currentIdentifier.append(currentChar);
             *column = *column + 1;
         }
     }
-    while (currentChar.isNumber());
+    while (currentChar.isNumber() ||
+           (currentIdentifier == "-"));
     currentToken = T_NumericLitteral;
 
     if (currentChar == '.')
@@ -228,7 +230,8 @@ Token Lexer::readToken(QByteArray currentLine, int line, int *column, Token *las
         {
             currentToken = readIdentifier(currentLine, line, column);
         }
-        else if (currentchar.isNumber())
+        else if (currentchar.isNumber() ||
+                (currentchar == '-' && (*column) + 1 < currentLine.count() && QChar(currentLine.at((*column) + 1)).isNumber()))
         {
             currentToken = readNumber(currentLine, line, column);
         }
