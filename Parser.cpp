@@ -198,7 +198,7 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
         tok.column = token.column;
         tok.lineNumber = token.lineNumber;
         tok.lineStr = token.lineStr;
-        tok.content = (token.content == "++") ? "1" : "-1";
+        tok.content = "1";
         tok.type = T_NumericLitteral;
 
         ParsingTreeValue *value = makeValue({tok});
