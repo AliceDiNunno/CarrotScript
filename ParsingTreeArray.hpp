@@ -16,7 +16,7 @@ struct ParsingTreeArray: public ParsingTreeValue
 
     virtual ParsingTreeValue *execute(MemoryManagement *)
     {
-        return nullptr;
+        return this;
     }
 };
 
