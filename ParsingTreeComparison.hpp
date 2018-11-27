@@ -19,6 +19,10 @@ struct ParsingTreeComparison: public ParsingTreeValue
 
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
     {
+        if (left == nullptr || right == nullptr)
+        {
+            return nullptr; //err
+        }
         QVariant l = MemoryManagement::translateValue(left->execute(pMemory));
         QVariant r = MemoryManagement::translateValue(right->execute(pMemory));
 
