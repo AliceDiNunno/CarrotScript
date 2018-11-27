@@ -4,9 +4,9 @@
 #include <QList>
 #include <QByteArray>
 
-#include "ParsingTreeAccessor.hpp"
-#include "ParsingTreeFunctionDeclaration.hpp"
-#include "ParsingTreeValue.hpp"
+#include "../Memory/ParsingTreeAccessor.hpp"
+#include "../Parser/ParsingTreeFunctionDeclaration.hpp"
+#include "../Types/ParsingTreeValue.hpp"
 #include "ScriptMemoryBinding.hpp"
 
 class ScriptClassBinding: public ScriptMemoryBinding

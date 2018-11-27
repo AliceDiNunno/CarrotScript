@@ -8,8 +8,8 @@
 #include <QtDebug>
 
 #include "MemoryScriptVariable.hpp"
-#include "ScriptMemoryBinding.hpp"
-#include "ScriptClassBinding.hpp"
+#include "../Binding/ScriptMemoryBinding.hpp"
+#include "../Binding/ScriptClassBinding.hpp"
 
 class MemoryManagement: public QObject, public ScriptMemoryBinding
 {

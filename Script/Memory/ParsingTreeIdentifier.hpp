@@ -2,7 +2,7 @@
 #define PARSINGTREEIDENTIFIER_HPP
 
 #include <QByteArray>
-#include "ParsingTreeValue.hpp"
+#include "../Types/ParsingTreeValue.hpp"
 
 struct ParsingTreeIdentifier: public ParsingTreeValue
 {

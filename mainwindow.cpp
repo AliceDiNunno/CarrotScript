@@ -6,8 +6,8 @@
 #include <QDebug>
 #include <QString>
 #include <iostream>
-#include "UnknownTokenException.hpp"
-#include "Parser.hpp"
+#include "Script/Exceptions/UnknownTokenException.hpp"
+#include "Script/Parser/Parser.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,7 +31,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_loadButton_clicked()
 {
-    QString fileName = "/Users/alice/CarrotScript/CCS/var.ccs";
+    QString fileName = "/Users/alice/CarrotScript/CCS/array.ccs";
 
     QFile *f = new QFile(fileName);
     if (f->open(QIODevice::ReadOnly))

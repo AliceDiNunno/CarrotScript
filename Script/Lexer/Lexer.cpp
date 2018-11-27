@@ -2,7 +2,7 @@
 #include <QRegularExpression>
 #include "Lexer.hpp"
 #include <QDebug>
-#include "UnknownTokenException.hpp"
+#include "../Exceptions/UnknownTokenException.hpp"
 
 Lexer::Lexer()
 {

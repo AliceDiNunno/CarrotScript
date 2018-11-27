@@ -24,60 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++17
 
-SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    Lexer.cpp \
-    Parser.cpp \
-    Token.cpp \
-    CarrotScriptException.cpp \
-    UnknownTokenException.cpp \
-    TokenType.cpp \
-    MemoryManagement.cpp \
-    ParsingTreeBoolean.cpp \
-    ParsingTreeFloat.cpp \
-    ParsingTreeInteger.cpp \
-    ParsingTreeString.cpp \
-    ParsingTreeExecutable.cpp \
-    ParsingTreeAccessor.cpp
 
-HEADERS += \
-    mainwindow.h \
-    Lexer.hpp \
-    Parser.hpp \
-    Token.hpp \
-    CarrotScriptException.hpp \
-    UnknownTokenException.hpp \
-    TokenType.hpp \
-    TokenizeItem.hpp \
-    ParsingTreeOperationType.hpp \
-    ParsingTreeValueType.hpp \
-    ParsingTreeValueComparisonType.hpp \
-    ParsingTreeExecutable.hpp \
-    ParsingTreeEntryPoint.hpp \
-    ParsingTreeValue.hpp \
-    ParsingTreeString.hpp \
-    ParsingTreeIdentifier.hpp \
-    ParsingTreeInteger.hpp \
-    ParsingTreeFloat.hpp \
-    ParsingTreeBoolean.hpp \
-    ParsingTreeArray.hpp \
-    ParsingTreeAccessor.hpp \
-    ParsingTreeComparison.hpp \
-    ParsingTreeFunctionCall.hpp \
-    ParsingTreeFunctionDeclaration.hpp \
-    ParsingTreeAssignement.hpp \
-    ParsingTreeKeywordType.hpp \
-    ParsingTreeKeyword.hpp \
-    ParsingTreeCondition.hpp \
-    ParsingTreeEntryPointPriority.hpp \
-    ParsingTreeCalculateValuePriority.hpp \
-    MemoryManagement.hpp \
-    ScriptMemoryBinding.hpp \
-    MemoryScriptVariable.hpp \
-    ScriptClassBinding.hpp \
-    ParsingTreeOperation.hpp \
-    ParsingTreeVariabeRead.hpp
 
 FORMS += \
         mainwindow.ui
@@ -86,3 +33,58 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+HEADERS += \
+    mainwindow.h \
+    Script/Binding/ScriptClassBinding.hpp \
+    Script/Binding/ScriptMemoryBinding.hpp \
+    Script/Exceptions/CarrotScriptException.hpp \
+    Script/Exceptions/UnknownTokenException.hpp \
+    Script/Lexer/Lexer.hpp \
+    Script/Lexer/Token.hpp \
+    Script/Lexer/TokenizeItem.hpp \
+    Script/Lexer/TokenType.hpp \
+    Script/Memory/MemoryManagement.hpp \
+    Script/Memory/MemoryScriptVariable.hpp \
+    Script/Memory/ParsingTreeAccessor.hpp \
+    Script/Memory/ParsingTreeIdentifier.hpp \
+    Script/Memory/ParsingTreeVariabeRead.hpp \
+    Script/Operations/ParsingTreeComparison.hpp \
+    Script/Operations/ParsingTreeOperation.hpp \
+    Script/Operations/ParsingTreeOperationType.hpp \
+    Script/Operations/ParsingTreeValueComparisonType.hpp \
+    Script/Parser/Parser.hpp \
+    Script/Parser/ParsingTreeAssignement.hpp \
+    Script/Parser/ParsingTreeCalculateValuePriority.hpp \
+    Script/Parser/ParsingTreeCondition.hpp \
+    Script/Parser/ParsingTreeEntryPoint.hpp \
+    Script/Parser/ParsingTreeEntryPointPriority.hpp \
+    Script/Parser/ParsingTreeExecutable.hpp \
+    Script/Parser/ParsingTreeFunctionCall.hpp \
+    Script/Parser/ParsingTreeFunctionDeclaration.hpp \
+    Script/Parser/ParsingTreeKeyword.hpp \
+    Script/Parser/ParsingTreeKeywordType.hpp \
+    Script/Types/ParsingTreeArray.hpp \
+    Script/Types/ParsingTreeBoolean.hpp \
+    Script/Types/ParsingTreeFloat.hpp \
+    Script/Types/ParsingTreeInteger.hpp \
+    Script/Types/ParsingTreeString.hpp \
+    Script/Types/ParsingTreeValue.hpp \
+    Script/Types/ParsingTreeValueType.hpp
+
+SOURCES += \
+    main.cpp \
+    mainwindow.cpp \
+    Script/Exceptions/CarrotScriptException.cpp \
+    Script/Exceptions/UnknownTokenException.cpp \
+    Script/Lexer/Lexer.cpp \
+    Script/Lexer/Token.cpp \
+    Script/Lexer/TokenType.cpp \
+    Script/Memory/MemoryManagement.cpp \
+    Script/Memory/ParsingTreeAccessor.cpp \
+    Script/Parser/Parser.cpp \
+    Script/Parser/ParsingTreeExecutable.cpp \
+    Script/Types/ParsingTreeBoolean.cpp \
+    Script/Types/ParsingTreeFloat.cpp \
+    Script/Types/ParsingTreeInteger.cpp \
+    Script/Types/ParsingTreeString.cpp

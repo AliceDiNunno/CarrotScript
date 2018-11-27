@@ -1,21 +1,21 @@
 #include "Parser.hpp"
 #include <QDebug>
 
-#include "UnknownTokenException.hpp"
+#include "../Exceptions/UnknownTokenException.hpp"
 #include "ParsingTreeCalculateValuePriority.hpp"
-#include "ParsingTreeOperation.hpp"
-#include "ParsingTreeComparison.hpp"
+#include "../Operations/ParsingTreeOperation.hpp"
+#include "../Operations/ParsingTreeComparison.hpp"
 #include "ParsingTreeCondition.hpp"
-#include "ParsingTreeString.hpp"
-#include "ParsingTreeInteger.hpp"
-#include "ParsingTreeFloat.hpp"
-#include "ParsingTreeBoolean.hpp"
-#include "ParsingTreeOperationType.hpp"
+#include "../Types/ParsingTreeString.hpp"
+#include "../Types/ParsingTreeInteger.hpp"
+#include "../Types/ParsingTreeFloat.hpp"
+#include "../Types/ParsingTreeBoolean.hpp"
+#include "../Operations/ParsingTreeOperationType.hpp"
 #include "ParsingTreeEntryPoint.hpp"
 #include "ParsingTreeEntryPointPriority.hpp"
-#include "ParsingTreeValueType.hpp"
-#include "ParsingTreeValueComparisonType.hpp"
-#include "ParsingTreeVariabeRead.hpp"
+#include "../Types/ParsingTreeValueType.hpp"
+#include "../Operations/ParsingTreeValueComparisonType.hpp"
+#include "../Memory/ParsingTreeVariabeRead.hpp"
 
 bool isTokenEnter(TokenType t)
 {

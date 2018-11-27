@@ -4,15 +4,15 @@
 #include <QList>
 #include <QByteArray>
 #include <QVariant>
-#include "Lexer.hpp"
-#include "MemoryManagement.hpp"
+#include "../Lexer/Lexer.hpp"
+#include "../Memory/MemoryManagement.hpp"
 
 #include "ParsingTreeEntryPoint.hpp"
 #include "ParsingTreeFunctionCall.hpp"
 #include "ParsingTreeFunctionDeclaration.hpp"
 #include "ParsingTreeAssignement.hpp"
 #include "ParsingTreeKeyword.hpp"
-#include "ParsingTreeArray.hpp"
+#include "../Types/ParsingTreeArray.hpp"
 
 class Parser
 {

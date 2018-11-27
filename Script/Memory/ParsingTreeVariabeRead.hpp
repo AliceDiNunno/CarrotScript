@@ -1,7 +1,7 @@
 #ifndef PARSINGTREEVARIABEREAD_HPP
 #define PARSINGTREEVARIABEREAD_HPP
 
-#include "ParsingTreeValue.hpp"
+#include "../Types/ParsingTreeValue.hpp"
 #include "ParsingTreeAccessor.hpp"
 #include "MemoryManagement.hpp"
 

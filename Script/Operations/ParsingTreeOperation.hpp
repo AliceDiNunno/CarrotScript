@@ -1,11 +1,11 @@
 #ifndef PARSINGTREEOPERATION_HPP
 #define PARSINGTREEOPERATION_HPP
 
-#include "ParsingTreeValue.hpp"
+#include "../Types/ParsingTreeValue.hpp"
 #include "ParsingTreeOperationType.hpp"
-#include "MemoryManagement.hpp"
-#include "ParsingTreeInteger.hpp"
-#include "ParsingTreeFloat.hpp"
+#include "../Memory/MemoryManagement.hpp"
+#include "../Types/ParsingTreeInteger.hpp"
+#include "../Types/ParsingTreeFloat.hpp"
 
 struct ParsingTreeOperation: public ParsingTreeValue
 {

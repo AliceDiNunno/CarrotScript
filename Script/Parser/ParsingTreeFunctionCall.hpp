@@ -2,10 +2,10 @@
 #define PARSINGTREEFUNCTIONCALL_HPP
 
 #include <QList>
-#include "ParsingTreeAccessor.hpp"
+#include "../Memory/ParsingTreeAccessor.hpp"
 #include "ParsingTreeEntryPoint.hpp"
-#include "ParsingTreeValue.hpp"
-#include "MemoryManagement.hpp"
+#include "../Types/ParsingTreeValue.hpp"
+#include "../Memory/MemoryManagement.hpp"
 
 #include <QDebug>
 

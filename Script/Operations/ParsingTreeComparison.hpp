@@ -1,10 +1,10 @@
 #ifndef PARSINGTREECOMPARISON_HPP
 #define PARSINGTREECOMPARISON_HPP
 
-#include "ParsingTreeBoolean.hpp"
-#include "ParsingTreeValue.hpp"
+#include "../Types/ParsingTreeBoolean.hpp"
+#include "../Types/ParsingTreeValue.hpp"
 #include "ParsingTreeValueComparisonType.hpp"
-#include "MemoryManagement.hpp"
+#include "../Memory/MemoryManagement.hpp"
 
 struct ParsingTreeComparison: public ParsingTreeValue
 {

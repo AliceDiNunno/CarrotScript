@@ -3,9 +3,9 @@
 
 #include <QtDebug>
 #include "ParsingTreeEntryPoint.hpp"
-#include "ParsingTreeValue.hpp"
+#include "../Types/ParsingTreeValue.hpp"
 #include "ParsingTreeKeywordType.hpp"
-#include "MemoryManagement.hpp"
+#include "../Memory/MemoryManagement.hpp"
 
 struct ParsingTreeKeyword: public ParsingTreeEntryPoint
 {

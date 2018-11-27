@@ -2,10 +2,10 @@
 #define PARSINGTREEASSIGNEMENT_HPP
 
 #include <QByteArray>
-#include "ParsingTreeValue.hpp"
-#include "ParsingTreeAccessor.hpp"
+#include "../Types/ParsingTreeValue.hpp"
+#include "../Memory/ParsingTreeAccessor.hpp"
 #include "ParsingTreeEntryPoint.hpp"
-#include "MemoryManagement.hpp"
+#include "../Memory/MemoryManagement.hpp"
 
 struct ParsingTreeAssignment: public ParsingTreeEntryPoint
 {

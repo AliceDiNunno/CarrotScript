@@ -3,7 +3,7 @@
 
 #include <QPair>
 #include <QByteArray>
-#include "ParsingTreeValue.hpp"
+#include "../Types/ParsingTreeValue.hpp"
 
 using ScriptVariable = QPair<QByteArray, ParsingTreeValue *>;
 

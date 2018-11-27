@@ -2,8 +2,8 @@
 #define PARSINGTREECONDITION_HPP
 
 #include "ParsingTreeKeyword.hpp"
-#include "ParsingTreeComparison.hpp"
-#include "ParsingTreeBoolean.hpp"
+#include "../Operations/ParsingTreeComparison.hpp"
+#include "../Types/ParsingTreeBoolean.hpp"
 
 struct ParsingTreeCondition: public ParsingTreeKeyword
 {

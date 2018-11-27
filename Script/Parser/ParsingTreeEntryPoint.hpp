@@ -1,7 +1,7 @@
 #ifndef PARSINGTREEENTRYPOINT_HPP
 #define PARSINGTREEENTRYPOINT_HPP
 
-#include "ParsingTreeValue.hpp"
+#include "../Types/ParsingTreeValue.hpp"
 
 struct ParsingTreeEntryPoint: ParsingTreeValue
 {

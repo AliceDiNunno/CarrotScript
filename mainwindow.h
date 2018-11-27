@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include "Lexer.hpp"
-#include "Parser.hpp"
+#include "Script/Lexer/Lexer.hpp"
+#include "Script/Parser/Parser.hpp"
 
 namespace Ui {
     class MainWindow;

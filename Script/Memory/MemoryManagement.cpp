@@ -1,12 +1,12 @@
 #include "MemoryManagement.hpp"
 
-#include "ParsingTreeBoolean.hpp"
-#include "ParsingTreeString.hpp"
-#include "ParsingTreeInteger.hpp"
-#include "ParsingTreeArray.hpp"
-#include "ParsingTreeFloat.hpp"
+#include "../Types/ParsingTreeBoolean.hpp"
+#include "../Types/ParsingTreeString.hpp"
+#include "../Types/ParsingTreeInteger.hpp"
+#include "../Types/ParsingTreeArray.hpp"
+#include "../Types/ParsingTreeFloat.hpp"
 #include "ParsingTreeVariabeRead.hpp"
-#include "ParsingTreeOperation.hpp"
+#include "../Operations/ParsingTreeOperation.hpp"
 
 MemoryManagement::MemoryManagement()
 {

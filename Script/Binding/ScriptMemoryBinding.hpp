@@ -1,8 +1,8 @@
 #ifndef SCRIPTMEMORYBINDING_HPP
 #define SCRIPTMEMORYBINDING_HPP
 
-#include "ParsingTreeValue.hpp"
-#include "ParsingTreeAccessor.hpp"
+#include "../Types/ParsingTreeValue.hpp"
+#include "../Memory/ParsingTreeAccessor.hpp"
 
 class ScriptMemoryBinding
 {

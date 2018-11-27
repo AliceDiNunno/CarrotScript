@@ -1,5 +1,5 @@
 #include "ParsingTreeExecutable.hpp"
-#include "MemoryManagement.hpp"
+#include "../Memory/MemoryManagement.hpp"
 
 void ParsingTreeExecutable::checkScope(MemoryManagement *apMem)
 {
