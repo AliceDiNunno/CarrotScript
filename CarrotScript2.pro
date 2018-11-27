@@ -38,7 +38,8 @@ SOURCES += \
     ParsingTreeFloat.cpp \
     ParsingTreeInteger.cpp \
     ParsingTreeString.cpp \
-    ParsingTreeExecutable.cpp
+    ParsingTreeExecutable.cpp \
+    ParsingTreeAccessor.cpp
 
 HEADERS += \
     mainwindow.h \

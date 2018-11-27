@@ -518,7 +518,7 @@ ParsingTreeValue *Parser::makeLitteral(Token t)
     if (t.type == T_FloatLitteral)
     {
         ParsingTreeFloat *flt = new ParsingTreeFloat();
-        flt->value = t.content.toFloat();
+        flt->value = t.content.toDouble();
         return flt;
     }
     if (t.type == T_BoolLitteral)

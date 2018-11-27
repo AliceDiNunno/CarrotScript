@@ -31,6 +31,7 @@ public:
 
 private:
     void insert(ScriptVariable );
+    ParsingTreeValue *readChild(ParsingTreeAccessor *accs, ParsingTreeValue *vp);
 
 signals:
     void message(QString );

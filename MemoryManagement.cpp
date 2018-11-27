@@ -18,9 +18,36 @@ MemoryManagement::~MemoryManagement()
 
 }
 
+ParsingTreeValue *MemoryManagement::readChild(ParsingTreeAccessor *accs, ParsingTreeValue *pValue)
+{
+    if (accs == nullptr || pValue == nullptr || accs->child == nullptr)
+    {
+        return nullptr;
+    }
+
+    if (ParsingTreeArray *pta = dynamic_cast<ParsingTreeArray *>(pValue))
+    {
+        ParsingTreeAccessor *pChild = accs->child;
+        if (ParsingTreeInteger *pti = dynamic_cast<ParsingTreeInteger *>(pChild->name))
+        {
+            return (pta->values.at(pti->value));
+        }
+        //err (unsupported)
+        return nullptr;
+    }
+    else
+    {
+        //err (unsupported)
+        return nullptr;
+    }
+}
+
 ParsingTreeValue *MemoryManagement::readValue(ParsingTreeAccessor *name)
 {
+    if (name == nullptr)
+        return nullptr;
     QString varName = translateValue(name).toString();
+    ParsingTreeValue *vp = nullptr;
     for (int iScope = 0; iScope < scopes.count(); iScope++)
     {
         QList<ScriptVariable *> *vars = scopes.at(iScope);
@@ -33,16 +60,25 @@ ParsingTreeValue *MemoryManagement::readValue(ParsingTreeAccessor *name)
                 str = str.arg(QString(var->first)).arg(translateValue(var->second).toString());
                 emit info(str);
 
-                return var->second;
+                vp = var->second;
+                break;
             }
         }
+        if (vp != nullptr)
+            break;
     }
-    emit info(QString("Fetch unknown (%1)").arg(varName));
-    return nullptr;
+    if (vp == nullptr)
+    {
+        emit info(QString("Fetch unknown (%1)").arg(varName));
+        return nullptr;
+    }
+    if (name->child == nullptr)
+        return vp;
+    return readChild(name, vp);
 }
 
-
-// Check For Functions
+// TODO: accessor and identifier
+// TODO: Check For Functions
 ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeIdentifier *ids, QList<ParsingTreeValue *> args)
 {
     if (translateValue(ids->name) == "message")
@@ -61,6 +97,11 @@ ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeIdentifier *ids, QLi
                 {
                     ParsingTreeValue *ptv = pto->execute(this);
                     //qDebug() << "PTV" << translateValue(ptv);
+                    ptvlist << translateValue(ptv);
+                }
+                else if(ParsingTreeAccessor *pta = dynamic_cast<ParsingTreeAccessor *>(pCurrentValue))
+                {
+                    ParsingTreeValue *ptv = readValue(pta);
                     ptvlist << translateValue(ptv);
                 }
                 else
@@ -122,7 +163,7 @@ QVariant MemoryManagement::translateValue(ParsingTreeValue *val)
     }
     else if (ParsingTreeAccessor *pValue = dynamic_cast<ParsingTreeAccessor *>(val))
     {
-        //TODO
+        return translateValue(pValue->name); //Todo: return all accesspr data
     }
     else if (ParsingTreeArray *pValue = dynamic_cast<ParsingTreeArray *>(val))
     {

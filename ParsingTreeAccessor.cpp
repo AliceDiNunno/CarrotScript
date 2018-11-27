@@ -3,5 +3,5 @@
 
 ParsingTreeValue *ParsingTreeAccessor::execute(MemoryManagement *pMemory)
 {
-    return nullptr;
+    return this;
 }
