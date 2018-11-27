@@ -390,8 +390,12 @@ ParsingTreeValue *Parser::makeValue(QList<Token> tokens)
     for (int iToken = 0; iToken < tokens.count(); iToken++)
     {
         Token currentToken = tokens.at(iToken);
+
         //qDebug() << "check " << currentToken.content << tts(currentToken.type);
         ParsingTreeCalculateValuePriority precedence = getPrecedence(currentToken);
+        if (currentToken.type == T_Comparison && currentToken.content == "!")
+            continue;
+
         if (precedence == PTCVP_Unsupported)
             continue;
 
@@ -560,6 +564,13 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
 
     if (keyword->type == PTKT_If || keyword->type == PTKT_While)
     {
+        bool invertCondition = false;
+        if (tokens.count() > 1 && tokens.at(0).content == "!" && tokens.at(0).type == T_Comparison)
+        {
+            invertCondition = true;
+            tokens.removeFirst();
+        }
+
         ParsingTreeKeywordType type = keyword->type;
         delete keyword;
         keyword = new ParsingTreeCondition();
@@ -573,12 +584,14 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
 
         if (ptc)
         {
+            ptc->successOnFailure = invertCondition;
             ((ParsingTreeCondition *)keyword)->condition = ptc;
 //            qDebug() << "COMPARISON OK";
         }
         else if (ptb)
         {
             ptc = new ParsingTreeComparison();
+            ptc->successOnFailure = invertCondition;
             ptc->left = ptb;
             ParsingTreeBoolean *ptbb = new ParsingTreeBoolean();
             ptbb->value = true;
@@ -590,6 +603,7 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
         else if (ptr)
         {
             ptc = new ParsingTreeComparison();
+            ptc->successOnFailure = invertCondition;
             ptc->left = ptr;
             ParsingTreeBoolean *ptbb = new ParsingTreeBoolean();
             ptbb->value = true;

@@ -11,6 +11,7 @@ struct ParsingTreeComparison: public ParsingTreeValue
     ParsingTreeValue *left;
     ParsingTreeValueComparisonType type;
     ParsingTreeValue *right;
+    bool successOnFailure = false;
 
     ParsingTreeComparison()
     {
@@ -60,8 +61,12 @@ struct ParsingTreeComparison: public ParsingTreeValue
             break;
         }
 
+        if (successOnFailure)
+            result = !result;
+
         ParsingTreeBoolean *ptb = new ParsingTreeBoolean();
         ptb->value = result;
+
         return ptb;
     }
 };
