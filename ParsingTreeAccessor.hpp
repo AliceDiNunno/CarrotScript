@@ -9,7 +9,7 @@ struct ParsingTreeAccessor: public ParsingTreeIdentifier
     {
         debugName = "ParsingTreeAccessor";
     }
-
+    ParsingTreeValue *execute(MemoryManagement *pMemory);
     ParsingTreeAccessor *child = nullptr; // User -> info -> displayName
 };
 
