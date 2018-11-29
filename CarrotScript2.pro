@@ -78,7 +78,8 @@ HEADERS += \
     Script/Exceptions/InvalidMemoryOperationException.hpp \
     Script/Exceptions/InvalidComparisonException.hpp \
     Script/Exceptions/InvalidOperationException.hpp \
-    Script/Exceptions/UnxpectedTokenException.hpp
+    Script/Exceptions/UnxpectedTokenException.hpp \
+    Script/Library/StandardLibrary.hpp
 
 SOURCES += \
     main.cpp \
@@ -119,4 +120,5 @@ SOURCES += \
     Script/Exceptions/InvalidComparisonException.cpp \
     Script/Exceptions/InvalidOperationException.cpp \
     Script/Exceptions/UnxpectedTokenException.cpp \
-    Script/Binding/ScriptClassBinding.cpp
+    Script/Binding/ScriptClassBinding.cpp \
+    Script/Library/StandardLibrary.cpp

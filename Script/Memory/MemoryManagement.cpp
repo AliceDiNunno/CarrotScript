@@ -12,42 +12,8 @@
 #include "../Types/ParsingTreeFloat.hpp"
 #include "../Binding/ScriptClassBinding.hpp"
 #include "../Operations/ParsingTreeOperation.hpp"
+#include "../Library/StandardLibrary.hpp"
 #include "ParsingTreeVariabeRead.hpp"
-
-class StandardLibrary: public ScriptClassBinding
-{
-public:
-    StandardLibrary(MemoryManagement *apMemoryManagement): ScriptClassBinding(apMemoryManagement)
-    {
-
-    }
-
-    virtual QString className()
-    {
-        return "standard";
-    }
-
-    virtual QMap<QString, std::function<ParsingTreeValue *(const QList<QVariant> &)> > functions()
-    {
-        return {
-            { "message", [this](const QList<QVariant> &args) -> ParsingTreeValue *
-                {
-                    if (args.count() >= 1)
-                        emit _pMemory->message(args.at(0).toString());
-                    return nullptr;
-                }
-            },
-            { "double", [](const QList<QVariant> &args) -> ParsingTreeValue *
-                {
-                    ParsingTreeInteger *pti = nullptr;
-                    if (args.count() >= 1)
-                       pti = ParsingTreeInteger::make(args.at(0).toInt() * 2);
-                    return pti;
-                }
-            },
-        };
-    }
-};
 
 MemoryManagement::MemoryManagement()
 {
@@ -189,8 +155,6 @@ ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeAccessor *ids, QList
     {
         throw InvalidMemoryOperationException("Module " + className + " doesn't exist", "", "", -1, -1);
     }
-
-    return nullptr;
 }
 
 void MemoryManagement::setValue(ParsingTreeAccessor *accs, ParsingTreeValue *val)
@@ -264,9 +228,9 @@ void MemoryManagement::insert(ScriptVariable sv)
             if (sv.first == var->first)
             {
                 var->second = sv.second;
-                QString str = "Update %1 = %2";
+                QString str = "Update %1 = %2";/*
                 str = str.arg(QString(sv.first)).arg(translateValue(var->second).toString());
-                emit info(str);
+                emit info(str);*/
                 return;
             }
         }
@@ -275,9 +239,10 @@ void MemoryManagement::insert(ScriptVariable sv)
     siv->first = sv.first;
     siv->second = sv.second;
     scopes.last()->append(siv);
+    /*
     QString str = "Set %1 = %2";
     str = str.arg(QString(siv->first)).arg(translateValue(siv->second).toString());
-    emit info(str);
+    emit info(str);*/
 }
 
 void MemoryManagement::enterScope()

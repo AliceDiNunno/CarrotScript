@@ -717,5 +717,3 @@ ParsingTreeEntryPoint *Parser::join(QList<ParsingTreeEntryPoint *> eps)
     }
     return eps.first();
 }
-
-
