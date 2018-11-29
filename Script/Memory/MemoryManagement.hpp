@@ -23,17 +23,18 @@ public:
 
     void reset();
 
-    ParsingTreeValue *callFunction(ParsingTreeIdentifier *ids, QList<ParsingTreeValue *>);
+    ParsingTreeValue *callFunction(ParsingTreeAccessor *ids, QList<ParsingTreeValue *>);
 
     void setValue(ParsingTreeAccessor *name, ParsingTreeValue *);
     ParsingTreeValue *readValue(ParsingTreeAccessor *name);
     static QVariant translateValue(ParsingTreeValue *);
 
+    void insert(ScriptVariable );
+
     void enterScope();
     void exitScope();
 
 private:
-    void insert(ScriptVariable );
     ParsingTreeValue *readChild(ParsingTreeAccessor *accs, ParsingTreeValue *vp);
 
 signals:
@@ -42,7 +43,7 @@ signals:
     void warn(QString );
 
 private:
-    QMap<QByteArray, ScriptClassBinding *> bindings;
+    QMap<QString, ScriptClassBinding *> bindings;
     QList<QList<ScriptVariable *> *> scopes;
 };
 

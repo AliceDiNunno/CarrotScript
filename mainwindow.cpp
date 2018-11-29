@@ -14,6 +14,7 @@
 #include "Script/Exceptions/CarrotScriptException.hpp"
 #include "Script/Exceptions/BadAccessorException.hpp"
 #include "Script/Parser/Parser.hpp"
+#include "Script/Types/ParsingTreeString.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -37,7 +38,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_loadButton_clicked()
 {
-    QString fileName = "/Users/alice/CarrotScript/CCS/logic.ccs";
+    QString fileName = "/Users/alice/CarrotScript/CCS/func.ccs";
 
     QFile *f = new QFile(fileName);
     if (f->open(QIODevice::ReadOnly))
@@ -106,6 +107,7 @@ void MainWindow::on_runButton_clicked()
     try
     {
         MemoryManagement *pMemory = new MemoryManagement();
+        pMemory->insert({"a", ParsingTreeString::make("Injection")});
         connect(pMemory, SIGNAL(message(QString )), this, SLOT(InterpreterMessage(QString )));
         connect(pMemory, SIGNAL(info(QString )), this, SLOT(InterpreterInfo(QString )));
         connect(pMemory, SIGNAL(warn(QString )), this, SLOT(InterpreterAlert(QString )));

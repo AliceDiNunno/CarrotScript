@@ -15,7 +15,9 @@ ParsingTreeFunctionCall::~ParsingTreeFunctionCall()
 
 ParsingTreeValue *ParsingTreeFunctionCall::execute(MemoryManagement *pMemory)
 {
+    pMemory->enterScope();
     ParsingTreeValue *pResult = pMemory->callFunction(source, arguments);
+    pMemory->exitScope();
 
     executeNext(pMemory);
 

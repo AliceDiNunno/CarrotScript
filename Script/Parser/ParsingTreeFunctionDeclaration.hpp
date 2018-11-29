@@ -14,7 +14,6 @@ struct ParsingTreeFunctionDeclaration: public ParsingTreeEntryPoint
 
     QByteArray name;
     QList<QByteArray> variableNames;
-
 };
 
 #endif // PARSINGTREEFUNCTIONDECLARATION_HPP

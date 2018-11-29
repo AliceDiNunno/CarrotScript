@@ -118,4 +118,5 @@ SOURCES += \
     Script/Exceptions/InvalidMemoryOperationException.cpp \
     Script/Exceptions/InvalidComparisonException.cpp \
     Script/Exceptions/InvalidOperationException.cpp \
-    Script/Exceptions/UnxpectedTokenException.cpp
+    Script/Exceptions/UnxpectedTokenException.cpp \
+    Script/Binding/ScriptClassBinding.cpp

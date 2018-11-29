@@ -9,14 +9,17 @@
 struct ParsingTreeValue;
 struct ParsingTreeAccessor;
 struct ParsingTreeFunctionDeclaration;
+class MemoryManagement;
 class ScriptClassBinding: public ScriptMemoryBinding
 {
 public:
-    virtual QList<ParsingTreeFunctionDeclaration *> functions() = 0;
-    virtual ParsingTreeFunctionDeclaration *function(QList<QByteArray> arguments) = 0;
+    ScriptClassBinding(MemoryManagement *apMemoryManagement);
+    virtual QString className() = 0;
 
-    virtual ParsingTreeValue *readValue(ParsingTreeAccessor *) = 0;
-    virtual void setValue(ParsingTreeAccessor *name, ParsingTreeValue *) = 0;
+    virtual QMap<QString, std::function<ParsingTreeValue *(const QList<QVariant> &)>> functions() = 0;
+
+protected:
+    MemoryManagement *_pMemory;
 };
 
 #endif // SCRIPTCLASSBINDING_HPP

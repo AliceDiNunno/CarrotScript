@@ -4,17 +4,56 @@
 #include "../Exceptions/UnknownVariableException.hpp"
 #include "../Exceptions/InterpreterErrorException.hpp"
 #include "../Exceptions/InvalidMemoryOperationException.hpp"
+#include "../Parser/ParsingTreeFunctionCall.hpp"
 #include "../Types/ParsingTreeBoolean.hpp"
 #include "../Types/ParsingTreeString.hpp"
 #include "../Types/ParsingTreeInteger.hpp"
 #include "../Types/ParsingTreeArray.hpp"
 #include "../Types/ParsingTreeFloat.hpp"
+#include "../Binding/ScriptClassBinding.hpp"
 #include "../Operations/ParsingTreeOperation.hpp"
 #include "ParsingTreeVariabeRead.hpp"
+
+class StandardLibrary: public ScriptClassBinding
+{
+public:
+    StandardLibrary(MemoryManagement *apMemoryManagement): ScriptClassBinding(apMemoryManagement)
+    {
+
+    }
+
+    virtual QString className()
+    {
+        return "standard";
+    }
+
+    virtual QMap<QString, std::function<ParsingTreeValue *(const QList<QVariant> &)> > functions()
+    {
+        return {
+            { "message", [this](const QList<QVariant> &args) -> ParsingTreeValue *
+                {
+                    if (args.count() >= 1)
+                        emit _pMemory->message(args.at(0).toString());
+                    return nullptr;
+                }
+            },
+            { "double", [](const QList<QVariant> &args) -> ParsingTreeValue *
+                {
+                    ParsingTreeInteger *pti = nullptr;
+                    if (args.count() >= 1)
+                       pti = ParsingTreeInteger::make(args.at(0).toInt() * 2);
+                    return pti;
+                }
+            },
+        };
+    }
+};
 
 MemoryManagement::MemoryManagement()
 {
     reset();
+    ScriptClassBinding *stdlibrary = new StandardLibrary(this);
+    bindings.insert(stdlibrary->className(), stdlibrary);
 }
 
 MemoryManagement::~MemoryManagement()
@@ -25,7 +64,7 @@ MemoryManagement::~MemoryManagement()
 void MemoryManagement::reset()
 {
     scopes = QList<QList<ScriptVariable *> *>();
-    bindings = QMap<QByteArray, ScriptClassBinding *>();
+    bindings = QMap<QString, ScriptClassBinding *>();
     scopes.append(new QList<ScriptVariable *>());
 }
 
@@ -85,42 +124,70 @@ ParsingTreeValue *MemoryManagement::readValue(ParsingTreeAccessor *name)
     return readChild(name, vp);
 }
 
-// TODO: Check For Functions
-ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeIdentifier *ids, QList<ParsingTreeValue *> args)
+ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeAccessor *ids, QList<ParsingTreeValue *> args)
 {
-    if (translateValue(ids->name) == "message")
+    if (ids == nullptr)
+        return nullptr;
+
+    QList<QVariant > ptvlist = QList<QVariant >();
+    for (int iArg = 0; iArg < args.count(); iArg++)
     {
-        QList<QVariant > ptvlist = QList<QVariant >();
-        for (int iArg = 0; iArg < args.count(); iArg++)
+        ParsingTreeValue *pCurrentValue = args.at(iArg);
+        if (ParsingTreeVariabeRead *ptvr = dynamic_cast<ParsingTreeVariabeRead *>(pCurrentValue))
         {
-            ParsingTreeValue *pCurrentValue = args.at(iArg);
-            if (ParsingTreeVariabeRead *ptvr = dynamic_cast<ParsingTreeVariabeRead *>(pCurrentValue))
+            ptvlist << translateValue(readValue(ptvr->id));
+        }
+        else
+        {
+            if (ParsingTreeOperation *pto = dynamic_cast<ParsingTreeOperation *>(pCurrentValue))
             {
-                ptvlist << translateValue(readValue(ptvr->id));
+                ParsingTreeValue *ptv = pto->execute(this);
+                ptvlist << translateValue(ptv);
+            }
+            else if(ParsingTreeAccessor *pta = dynamic_cast<ParsingTreeAccessor *>(pCurrentValue))
+            {
+                ParsingTreeValue *ptv = readValue(pta);
+                ptvlist << translateValue(ptv);
+            }
+            else if (ParsingTreeFunctionCall *ptf = dynamic_cast<ParsingTreeFunctionCall *>(pCurrentValue))
+            {
+                ptvlist << translateValue(ptf->execute(this));
             }
             else
             {
-                if (ParsingTreeOperation *pto = dynamic_cast<ParsingTreeOperation *>(pCurrentValue))
-                {
-                    ParsingTreeValue *ptv = pto->execute(this);
-                    ptvlist << translateValue(ptv);
-                }
-                else if(ParsingTreeAccessor *pta = dynamic_cast<ParsingTreeAccessor *>(pCurrentValue))
-                {
-                    ParsingTreeValue *ptv = readValue(pta);
-                    ptvlist << translateValue(ptv);
-                }
-                else
-                {
-                    ptvlist << translateValue(pCurrentValue);
-                }
+                ptvlist << translateValue(pCurrentValue);
             }
         }
+    }
 
-        if (ptvlist.count() >= 1)
+    QString className;
+    QString funcName;
+    if (ids->child == nullptr)
+    {
+        className = "standard";
+        funcName = translateValue(ids->name).toString();
+    }
+    else
+    {
+        className = translateValue(ids->name).toString();
+        funcName = translateValue(ids->child->name).toString();
+    }
+
+    if (bindings.keys().contains(className))
+    {
+        QMap<QString, std::function<ParsingTreeValue *(const QList<QVariant> &)>> functions = bindings.value(className)->functions();
+        if (functions.keys().contains(funcName))
         {
-            emit message(ptvlist.at(0).toString());
+            return functions.value(funcName)(ptvlist);
         }
+        else
+        {
+            throw InvalidMemoryOperationException("Function " + funcName + " doesn't exist in module " + className, "", "", -1, -1);
+        }
+    }
+    else
+    {
+        throw InvalidMemoryOperationException("Module " + className + " doesn't exist", "", "", -1, -1);
     }
 
     return nullptr;
