@@ -24,7 +24,6 @@ void ParsingTreeExecutable::checkScope(MemoryManagement *apMem)
     {
         didEnter = true;
         apMem->enterScope();
-//        scopeChange = 0;
     }
 }
 
