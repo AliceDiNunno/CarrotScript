@@ -9,6 +9,9 @@
 #include "ParsingTreeFunctionCall.hpp"
 #include "ParsingTreeFunctionDeclaration.hpp"
 #include "../Exceptions/UnknownTokenException.hpp"
+#include "../Exceptions/InterpreterErrorException.hpp"
+#include "../Exceptions/UnxpectedTokenException.hpp"
+#include "../Exceptions/InvalidOperationException.hpp"
 #include "../Lexer/Lexer.hpp"
 #include "../Lexer/TokenStrings.hpp"
 #include "../Memory/ParsingTreeVariabeRead.hpp"
@@ -103,7 +106,7 @@ ParsingTreeFunctionDeclaration *Parser::makeFunctionDeclaration(QList<Token> tok
         }
         else
         {
-            //Err
+            throw UnxpectedTokenException("", "", "", -1, -1);
         }
     }
 
@@ -331,7 +334,6 @@ ParsingTreeValue *Parser::makeValue(QList<Token> tokens)
     {
         Token currentToken = tokens.at(iToken);
 
-        //qDebug() << "check " << currentToken.content << tts(currentToken.type);
         ParsingTreeCalculateValuePriority precedence = getPrecedenceFromToken(currentToken);
         if (currentToken.type == T_Comparison && currentToken.content == CS_LEXER_NOT_OPERATOR)
             continue;
@@ -341,7 +343,6 @@ ParsingTreeValue *Parser::makeValue(QList<Token> tokens)
 
         if (precedence < lessPrioritizedItem)
         {
-            //qDebug() << "prio";
             lessPrioritizedItem = precedence;
             lessPrioritizedItemIndex = iToken;
         }
@@ -442,7 +443,7 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
 
     if ((keyword->type == PTKT_Else || keyword->type == PTKT_End) && tokens.count() > 0)
     {
-        //Error
+        throw UnxpectedTokenException("Else/End keyword cannot be followed by more tokens", "", "", -1, -1);
     }
 
     if (keyword->type == PTKT_If || keyword->type == PTKT_While)
@@ -494,9 +495,8 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
         }
         else
         {
-            //qDebug() << "COMPARISON, VAR AND BOOL FAIL" << MemoryManagement::translateValue(ptv);
+            throw InvalidOperationException("Comparison is not boolean", "", "", -1, -1);
         }
-
     }
 
     if (keyword->type == PTKT_Return)
@@ -523,7 +523,7 @@ ParsingTreeEntryPoint *Parser::getEntryPoint(QList<Token> tokens, int pos)
     {
         if (pos != 0)
         {
-            //TODO err because keyword can't be preceded
+            throw UnxpectedTokenException("Keyword cannot be preceded", "", "", -1, -1);
         }
 
         if (entryPointToken.content == CS_LEXER_FUNC_KEYWORD)
@@ -624,7 +624,7 @@ ParsingTreeEntryPoint *Parser::joinCondition(QList<ParsingTreeEntryPoint *> eps,
             else if ((currentCondition->type != PTKT_If && kwrd->type == PTKT_Else) ||
                      (kwrd->type == PTKT_Return))
             {
-                //err
+                throw UnxpectedTokenException("Bad Return/Else position", "", "", -1, -1);
             }
             else if (kwrd->type == PTKT_End)
             {
@@ -679,8 +679,7 @@ ParsingTreeEntryPoint *Parser::joinKeyword(QList<ParsingTreeEntryPoint *> eps, i
         decl = joinCondition(eps, from);
         return decl;
     }
-    //err here
-    return nullptr;
+    throw InterpreterErrorException("Unable to parse keyword", "", "", -1, -1);
 }
 
 ParsingTreeEntryPoint *Parser::join(QList<ParsingTreeEntryPoint *> eps)

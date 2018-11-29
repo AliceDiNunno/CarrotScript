@@ -34,7 +34,7 @@ ParsingTreeValue* ParsingTreeFloat::add(ParsingTreeValue* other)
     {
         return ParsingTreeString::make(QString("%1%2").arg(value).arg(rightValue->value));
     }
-    return nullptr; //err
+    return ParsingTreeValue::add(other);
 }
 
 ParsingTreeValue* ParsingTreeFloat::remove(ParsingTreeValue* other)
@@ -47,7 +47,7 @@ ParsingTreeValue* ParsingTreeFloat::remove(ParsingTreeValue* other)
     {
         return make(value - (double)rightValue->value);
     }
-    return nullptr; //err
+    return ParsingTreeValue::remove(other);
 }
 
 ParsingTreeValue* ParsingTreeFloat::divide(ParsingTreeValue* other)
@@ -60,7 +60,7 @@ ParsingTreeValue* ParsingTreeFloat::divide(ParsingTreeValue* other)
     {
         return make(value / (double)rightValue->value);
     }
-    return nullptr; //err
+    return ParsingTreeValue::divide(other);
 }
 
 ParsingTreeValue* ParsingTreeFloat::multiply(ParsingTreeValue* other)
@@ -73,5 +73,5 @@ ParsingTreeValue* ParsingTreeFloat::multiply(ParsingTreeValue* other)
     {
         return make(value * (double)rightValue->value);
     }
-    return nullptr; //err
+    return ParsingTreeValue::multiply(other);
 }

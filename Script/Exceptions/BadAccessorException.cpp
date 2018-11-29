@@ -12,5 +12,5 @@ BadAccessorException::BadAccessorException(QString detail,
                                              lineNumber,
                                              colNumber)
 {
-    qDebug() << "hello";
+
 }

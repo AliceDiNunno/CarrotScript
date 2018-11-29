@@ -1,4 +1,5 @@
 #include "ParsingTreeComparison.hpp"
+#include "../Exceptions/InvalidComparisonException.hpp"
 
 ParsingTreeComparison::ParsingTreeComparison()
 {
@@ -10,7 +11,10 @@ ParsingTreeValue *ParsingTreeComparison::execute(MemoryManagement *pMemory)
 {
     if (left == nullptr || right == nullptr)
     {
-        return nullptr; //err
+        if (left == nullptr)
+            throw InvalidComparisonException("Left member is null", "", line, lineNumber, -1);
+        else
+            throw InvalidComparisonException("Right member is null", "", line, lineNumber, -1);
     }
     QVariant l = MemoryManagement::translateValue(left->execute(pMemory));
     QVariant r = MemoryManagement::translateValue(right->execute(pMemory));
@@ -44,8 +48,7 @@ ParsingTreeValue *ParsingTreeComparison::execute(MemoryManagement *pMemory)
         result = (l != r);
         break;
     default:
-        //ERR
-        break;
+        throw InvalidComparisonException("Invalid comparison operator", "", line, lineNumber, -1);
     }
 
     if (successOnFailure)

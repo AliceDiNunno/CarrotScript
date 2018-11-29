@@ -1,11 +1,10 @@
 #include "ParsingTreeOperation.hpp"
-
+#include "../Exceptions/InvalidOperationException.hpp"
 
 ParsingTreeOperation::ParsingTreeOperation()
 {
     debugName = "ParsingTreeOperation";
 }
-
 
 ParsingTreeValue *ParsingTreeOperation::makeOperation(ParsingTreeValue *left, ParsingTreeValue *right)
 {
@@ -44,7 +43,7 @@ ParsingTreeValue *ParsingTreeOperation::execute(MemoryManagement *pMemory)
     }
     else if (lExecute == nullptr && rExecute == nullptr)
     {
-        return nullptr; //err
+        throw InvalidOperationException("Empty Operation", "", "", -1, -1);
     }
 
     return makeOperation(lExecute, rExecute);

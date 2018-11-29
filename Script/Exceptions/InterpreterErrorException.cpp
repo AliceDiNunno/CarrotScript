@@ -1,11 +1,11 @@
-#include "UnknownTokenException.hpp"
+#include "InterpreterErrorException.hpp"
 
-UnknownTokenException::UnknownTokenException(QString detail,
+InterpreterErrorException::InterpreterErrorException(QString detail,
                                              QString fileName,
                                              QString line,
                                              int lineNumber,
                                              int colNumber):
-                        CarrotScriptException ("UnexpectedToken",
+                        CarrotScriptException ("InterpreterError",
                                                detail,
                                                fileName,
                                                line,

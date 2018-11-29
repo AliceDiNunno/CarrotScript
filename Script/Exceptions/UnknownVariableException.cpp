@@ -12,5 +12,5 @@ UnknownVariableException::UnknownVariableException(QString detail,
                                                      lineNumber,
                                                      colNumber)
 {
-    qDebug() << "hello";
+
 }

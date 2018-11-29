@@ -39,5 +39,5 @@ ParsingTreeValue *ParsingTreeString::add(ParsingTreeValue *other)
     {
         return make(value.append(rightValue->value));
     }
-    return nullptr; //err
+    return ParsingTreeValue::add(other);
 }

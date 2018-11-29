@@ -30,7 +30,7 @@ ParsingTreeValue* ParsingTreeBoolean::add(ParsingTreeValue* other)
         bool rightBool = rightValue->value > 0;
         return make(value + rightBool);
     }
-    return nullptr; //err
+    return ParsingTreeValue::add(other);
 }
 
 ParsingTreeValue* ParsingTreeBoolean::remove(ParsingTreeValue* other)
@@ -44,17 +44,5 @@ ParsingTreeValue* ParsingTreeBoolean::remove(ParsingTreeValue* other)
         bool rightBool = rightValue->value > 0;
         return make(value - rightBool);
     }
-    return nullptr; //err
-}
-
-ParsingTreeValue* ParsingTreeBoolean::divide(ParsingTreeValue* other)
-{
-    Q_UNUSED(other);
-    return nullptr; //err
-}
-
-ParsingTreeValue* ParsingTreeBoolean::multiply(ParsingTreeValue* other)
-{
-    Q_UNUSED(other);
-    return nullptr; //err
+    return ParsingTreeValue::remove(other);
 }

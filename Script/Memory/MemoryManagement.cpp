@@ -2,6 +2,8 @@
 
 #include "../Exceptions/BadAccessorException.hpp"
 #include "../Exceptions/UnknownVariableException.hpp"
+#include "../Exceptions/InterpreterErrorException.hpp"
+#include "../Exceptions/InvalidMemoryOperationException.hpp"
 #include "../Types/ParsingTreeBoolean.hpp"
 #include "../Types/ParsingTreeString.hpp"
 #include "../Types/ParsingTreeInteger.hpp"
@@ -31,7 +33,7 @@ ParsingTreeValue *MemoryManagement::readChild(ParsingTreeAccessor *accs, Parsing
 {
     if (accs == nullptr || pValue == nullptr || accs->child == nullptr)
     {
-        return nullptr;
+        return nullptr; // TODO: create an unudefined value ?
     }
 
     if (ParsingTreeArray *pta = dynamic_cast<ParsingTreeArray *>(pValue))
@@ -167,7 +169,7 @@ QVariant MemoryManagement::translateValue(ParsingTreeValue *val)
     }
     else if (ParsingTreeAccessor *pValue = dynamic_cast<ParsingTreeAccessor *>(val))
     {
-        return translateValue(pValue->name); //Todo: return all accesspr data
+        return translateValue(pValue->name); //Todo: return accessor detail e.g. array[0] instead of array
     }
     else if (ParsingTreeArray *pValue = dynamic_cast<ParsingTreeArray *>(val))
     {
@@ -180,8 +182,7 @@ QVariant MemoryManagement::translateValue(ParsingTreeValue *val)
     }
     else
     {
-        return QVariant();
-        //err
+        return QVariant(); //undefined ?
     }
 }
 
@@ -214,14 +215,13 @@ void MemoryManagement::insert(ScriptVariable sv)
 
 void MemoryManagement::enterScope()
 {
-    qDebug() << "enter scope";
     scopes.append(new QList<ScriptVariable *>());
 }
 
 void MemoryManagement::exitScope()
 {
     if (scopes.count() <= 1)
-        qDebug() << ("CANNOT EXIT SCOPE"); //ERR
+        throw InvalidMemoryOperationException("Trying to exit root scope", "", "", -1, -1);
     else
         scopes.removeLast();
 }

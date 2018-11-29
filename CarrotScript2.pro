@@ -73,7 +73,12 @@ HEADERS += \
     Script/Parser/ParsingTreeAssignment.hpp \
     Script/Lexer/TokenStrings.hpp \
     Script/Exceptions/BadAccessorException.hpp \
-    Script/Exceptions/UnknownVariableException.hpp
+    Script/Exceptions/UnknownVariableException.hpp \
+    Script/Exceptions/InterpreterErrorException.hpp \
+    Script/Exceptions/InvalidMemoryOperationException.hpp \
+    Script/Exceptions/InvalidComparisonException.hpp \
+    Script/Exceptions/InvalidOperationException.hpp \
+    Script/Exceptions/UnxpectedTokenException.hpp
 
 SOURCES += \
     main.cpp \
@@ -108,4 +113,9 @@ SOURCES += \
     Script/Operations/ParsingTreeValueComparisonType.cpp \
     Script/Parser/ParsingTreeCalculateValuePriority.cpp \
     Script/Exceptions/BadAccessorException.cpp \
-    Script/Exceptions/UnknownVariableException.cpp
+    Script/Exceptions/UnknownVariableException.cpp \
+    Script/Exceptions/InterpreterErrorException.cpp \
+    Script/Exceptions/InvalidMemoryOperationException.cpp \
+    Script/Exceptions/InvalidComparisonException.cpp \
+    Script/Exceptions/InvalidOperationException.cpp \
+    Script/Exceptions/UnxpectedTokenException.cpp

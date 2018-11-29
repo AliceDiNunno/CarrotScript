@@ -1,5 +1,7 @@
 #include "ParsingTreeCondition.hpp"
 #include "../Operations/ParsingTreeComparison.hpp"
+#include "../Exceptions/UnknownTokenException.hpp"
+#include "../Exceptions/InvalidComparisonException.hpp"
 
 ParsingTreeCondition::ParsingTreeCondition()
 {
@@ -15,7 +17,7 @@ ParsingTreeValue *ParsingTreeCondition::execute(MemoryManagement *pMemory)
             ParsingTreeBoolean *bol = dynamic_cast<ParsingTreeBoolean *>(condition->execute(pMemory));
             if (!bol)
             {
-                return false; //Throw err
+                throw InvalidComparisonException("Condition does not return a 'bool' value", "", "", -1, -1);
             }
             return bol->value;
         };
@@ -40,12 +42,12 @@ ParsingTreeValue *ParsingTreeCondition::execute(MemoryManagement *pMemory)
         }
         else
         {
-            //Err
+            throw UnknownTokenException("Unknown condition type", "", "", -1, -1);
         }
     }
     else
-    {
-        //Err
+    {    
+        throw InvalidComparisonException("Condition is null", "", "", -1, -1);
     }
     executeNext(pMemory);
     return nullptr;

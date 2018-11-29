@@ -11,9 +11,6 @@ struct ParsingTreeBoolean: public ParsingTreeValue
     virtual ParsingTreeValue *execute(MemoryManagement *pMemory);
     virtual ParsingTreeValue* add(ParsingTreeValue* other);
     virtual ParsingTreeValue* remove(ParsingTreeValue* other);
-    virtual ParsingTreeValue* divide(ParsingTreeValue* other);
-    virtual ParsingTreeValue* multiply(ParsingTreeValue* other);
-
     bool value;
 };
 
