@@ -4,20 +4,13 @@
 #include <QByteArray>
 #include "../Types/ParsingTreeValue.hpp"
 
+class MemoryManagement;
 struct ParsingTreeIdentifier: public ParsingTreeValue
 {
+    ParsingTreeIdentifier();
+
     ParsingTreeValue *name;
-
-    ParsingTreeIdentifier()
-    {
-        debugName = "ParsingTreeIdentifier";
-    }
-
-    virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
-    {
-        executeNext(pMemory);
-        return this;
-    }
+    virtual ParsingTreeValue *execute(MemoryManagement *pMemory);
 };
 
 #endif // PARSINGTREEIDENTIFIER_HPP

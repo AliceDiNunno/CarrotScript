@@ -1,4 +1,5 @@
 #include "ParsingTreeBoolean.hpp"
+#include "ParsingTreeInteger.hpp"
 
 ParsingTreeBoolean::ParsingTreeBoolean()
 {
@@ -7,7 +8,6 @@ ParsingTreeBoolean::ParsingTreeBoolean()
 
 ParsingTreeBoolean *ParsingTreeBoolean::make(bool v)
 {
-    //qDebug() << "BL " << v;
     ParsingTreeBoolean *pBool = new ParsingTreeBoolean();
     pBool->value = v;
     return pBool;

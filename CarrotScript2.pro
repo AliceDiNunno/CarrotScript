@@ -22,7 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-CONFIG += c++17
+CONFIG += c++11
 
 
 
@@ -54,7 +54,6 @@ HEADERS += \
     Script/Operations/ParsingTreeOperationType.hpp \
     Script/Operations/ParsingTreeValueComparisonType.hpp \
     Script/Parser/Parser.hpp \
-    Script/Parser/ParsingTreeAssignement.hpp \
     Script/Parser/ParsingTreeCalculateValuePriority.hpp \
     Script/Parser/ParsingTreeCondition.hpp \
     Script/Parser/ParsingTreeEntryPoint.hpp \
@@ -70,7 +69,11 @@ HEADERS += \
     Script/Types/ParsingTreeInteger.hpp \
     Script/Types/ParsingTreeString.hpp \
     Script/Types/ParsingTreeValue.hpp \
-    Script/Types/ParsingTreeValueType.hpp
+    Script/Types/ParsingTreeValueType.hpp \
+    Script/Parser/ParsingTreeAssignment.hpp \
+    Script/Lexer/TokenStrings.hpp \
+    Script/Exceptions/BadAccessorException.hpp \
+    Script/Exceptions/UnknownVariableException.hpp
 
 SOURCES += \
     main.cpp \
@@ -87,4 +90,22 @@ SOURCES += \
     Script/Types/ParsingTreeBoolean.cpp \
     Script/Types/ParsingTreeFloat.cpp \
     Script/Types/ParsingTreeInteger.cpp \
-    Script/Types/ParsingTreeString.cpp
+    Script/Types/ParsingTreeString.cpp \
+    Script/Memory/ParsingTreeIdentifier.cpp \
+    Script/Memory/ParsingTreeVariableRead.cpp \
+    Script/Operations/ParsingTreeComparison.cpp \
+    Script/Operations/ParsingTreeOperation.cpp \
+    Script/Parser/ParsingTreeAssignment.cpp \
+    Script/Parser/ParsingTreeCondition.cpp \
+    Script/Parser/ParsingTreeEntryPoint.cpp \
+    Script/Parser/ParsingTreeFunctionCall.cpp \
+    Script/Parser/ParsingTreeFunctionDeclaration.cpp \
+    Script/Parser/ParsingTreeKeyword.cpp \
+    Script/Types/ParsingTreeArray.cpp \
+    Script/Types/ParsingTreeValue.cpp \
+    Script/Binding/ScriptMemoryBinding.cpp \
+    Script/Parser/ParsingTreeKeywordType.cpp \
+    Script/Operations/ParsingTreeValueComparisonType.cpp \
+    Script/Parser/ParsingTreeCalculateValuePriority.cpp \
+    Script/Exceptions/BadAccessorException.cpp \
+    Script/Exceptions/UnknownVariableException.cpp

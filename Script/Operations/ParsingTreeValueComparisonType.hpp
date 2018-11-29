@@ -1,6 +1,8 @@
 #ifndef PARSINGTREEVALUECOMPARISONTYPE_HPP
 #define PARSINGTREEVALUECOMPARISONTYPE_HPP
 
+#include "../Lexer/Token.hpp"
+
 enum ParsingTreeValueComparisonType
 {
     PTVCT_Equals, // ==
@@ -13,5 +15,7 @@ enum ParsingTreeValueComparisonType
     PTVCT_Or,
     PTVCT_Unknown
 };
+
+ParsingTreeValueComparisonType comparisonTypeFromToken(Token tkn);
 
 #endif // PARSINGTREEVALUECOMPARISONTYPE_HPP

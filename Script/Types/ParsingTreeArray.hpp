@@ -7,17 +7,11 @@
 
 struct ParsingTreeArray: public ParsingTreeValue
 {
+    ParsingTreeArray();
+
+    virtual ParsingTreeValue *execute(MemoryManagement *);
+
     QList<ParsingTreeValue *> values;
-
-    ParsingTreeArray()
-    {
-        debugName = "ParsingTreeArray";
-    }
-
-    virtual ParsingTreeValue *execute(MemoryManagement *)
-    {
-        return this;
-    }
 };
 
 #endif // PARSINGTREEARRAY_HPP

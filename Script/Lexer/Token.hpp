@@ -19,10 +19,4 @@ struct Token
     QList<Token> subTokens;
 };
 
-/*
-bool tokenIsGroup(Token t)
-{
-    return t.subTokens.isEmpty();
-}*/
-
 #endif // TOKEN_HPP

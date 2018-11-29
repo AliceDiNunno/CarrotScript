@@ -33,7 +33,8 @@ enum TokenType
     T_EndOfLine,
 };
 
-QString tts(TokenType t);
-bool isSymbol(TokenType t);
+extern QString tokenToString(TokenType t);
+extern bool isSymbol(TokenType t);
+extern QByteArray contentFromTokenType(TokenType t);
 
 #endif // TOKENTYPE_HPP

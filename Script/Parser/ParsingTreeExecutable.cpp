@@ -1,13 +1,30 @@
 #include "ParsingTreeExecutable.hpp"
 #include "../Memory/MemoryManagement.hpp"
 
+ParsingTreeExecutable::ParsingTreeExecutable()
+{
+    debugName = "ParsingTreeExecutable";
+    success = nullptr;
+    fallback = nullptr;
+    next = nullptr;
+    lineNumber = 0;
+    line = "";
+    scopeChange = 0;
+    didEnter = false;
+    scopeCheck = 0;
+}
+
+ParsingTreeExecutable::~ParsingTreeExecutable()
+{
+}
+
 void ParsingTreeExecutable::checkScope(MemoryManagement *apMem)
 {
     if (scopeChange > 0)
     {
         didEnter = true;
         apMem->enterScope();
-        scopeChange = 0;
+//        scopeChange = 0;
     }
 }
 
@@ -17,7 +34,6 @@ ParsingTreeValue *ParsingTreeExecutable::executeNext(MemoryManagement *apMem)
     checkScope(apMem);
     if (next)
     {
-        myline++;
         qDebug() << QString(line + " (%1)").arg(lineNumber);
         ptv = next->execute(apMem);
     }
@@ -30,7 +46,6 @@ ParsingTreeValue *ParsingTreeExecutable::executeFallback(MemoryManagement *apMem
     checkScope(apMem);
     if (fallback)
     {
-        myline++;
         qDebug() << QString(line + " (%1)").arg(lineNumber);
         ptv = fallback->execute(apMem);
     }
@@ -43,7 +58,6 @@ ParsingTreeValue *ParsingTreeExecutable::executeSuccess(MemoryManagement *apMem)
     checkScope(apMem);
     if (success)
     {
-        myline++;
         qDebug() << QString(line + " (%1)").arg(lineNumber);
         ptv = success->execute(apMem);
     }

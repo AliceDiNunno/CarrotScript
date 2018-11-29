@@ -1,8 +1,10 @@
 #include "TokenType.hpp"
+#include "../Lexer/TokenStrings.hpp"
 
-QString tts(TokenType t)
+QString tokenToString(TokenType t)
 {
-    switch (t) {
+    switch (t)
+    {
     case T_Keyword:
         return "T_Keyword";
     case T_Identifier:
@@ -45,11 +47,21 @@ QString tts(TokenType t)
         return "T_ExitPriority";
     case T_ArgumentSeparator:
         return "T_ArgumentSeparator";
+    default:
+        return "T_Unknown";
     }
-    return "T_Unknown";
 }
 
 bool isSymbol(TokenType t)
 {
     return (t >= T_AccessSeparator && t <= T_ArgumentSeparator);
+}
+
+QByteArray contentFromTokenType(TokenType t)
+{
+    if (t == T_EnterDefineArray || t == T_EnterArray)
+        return CS_LEXER_ARRAY_SEPARATOR;
+    if (t == T_EnterFunction || t == T_EnterPriority)
+        return CS_LEXER_FUNCTION_SEPARATOR;
+    return "";
 }

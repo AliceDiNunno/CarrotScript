@@ -3,8 +3,8 @@
 
 #include <QPair>
 #include <QByteArray>
-#include "../Types/ParsingTreeValue.hpp"
 
+struct ParsingTreeValue;
 using ScriptVariable = QPair<QByteArray, ParsingTreeValue *>;
 
 #endif // MEMORYSCRIPTVARIABLE_HPP

@@ -1,31 +1,16 @@
 #ifndef PARSINGTREEEXECUTABLE_HPP
 #define PARSINGTREEEXECUTABLE_HPP
 
-#include <QtDebug>
+#include <QString>
 
 class MemoryManagement;
 struct ParsingTreeValue;
-
-static int myline = 0;
-
 struct ParsingTreeExecutable
 {
-    QString debugName;
-
-    ParsingTreeExecutable()
-    {
-        debugName = "ParsingTreeExecutable";
-        success = nullptr;
-        fallback = nullptr;
-        next = nullptr;
-    }
-
-    virtual ~ParsingTreeExecutable()
-    {
-    }
+    ParsingTreeExecutable();
+    virtual ~ParsingTreeExecutable();
 
     virtual ParsingTreeValue *execute(MemoryManagement *) = 0;
-
     void checkScope(MemoryManagement *apMem);
 
     ParsingTreeValue *executeNext(MemoryManagement *apMem);
@@ -42,6 +27,7 @@ struct ParsingTreeExecutable
     int scopeChange = 0;
     bool didEnter = false;
     int scopeCheck = 0;
+    QString debugName;
 };
 
 #endif // PARSINGTREEEXECUTABLE_HPP

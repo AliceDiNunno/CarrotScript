@@ -9,21 +9,24 @@
 
 #include "MemoryScriptVariable.hpp"
 #include "../Binding/ScriptMemoryBinding.hpp"
-#include "../Binding/ScriptClassBinding.hpp"
 
+
+struct ParsingTreeIdentifier;
+class ScriptClassBinding;
 class MemoryManagement: public QObject, public ScriptMemoryBinding
 {
     Q_OBJECT
 
 public:
-    virtual ~MemoryManagement();
     MemoryManagement();
+    virtual ~MemoryManagement();
 
-    ParsingTreeValue *readValue(ParsingTreeAccessor *name);
+    void reset();
 
     ParsingTreeValue *callFunction(ParsingTreeIdentifier *ids, QList<ParsingTreeValue *>);
 
     void setValue(ParsingTreeAccessor *name, ParsingTreeValue *);
+    ParsingTreeValue *readValue(ParsingTreeAccessor *name);
     static QVariant translateValue(ParsingTreeValue *);
 
     void enterScope();

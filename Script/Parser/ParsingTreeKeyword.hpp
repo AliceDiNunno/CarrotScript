@@ -9,24 +9,12 @@
 
 struct ParsingTreeKeyword: public ParsingTreeEntryPoint
 {
+    ParsingTreeKeyword();
+
+    virtual ParsingTreeValue *execute(MemoryManagement *pMemory);
+
     ParsingTreeKeywordType type;
     ParsingTreeValue *value;
-
-    ParsingTreeKeyword()
-    {
-        debugName = "ParsingTreeKeyword";
-    }
-
-    virtual ParsingTreeValue *execute(MemoryManagement *pMemory)
-    {
-        //qDebug() << "Some Keyword " << type;
-        if (type == PTKT_End)
-        {
-            pMemory->exitScope();
-        }
-        executeNext(pMemory);
-        return nullptr;
-    }
 };
 
 #endif // PARSINGTREEKEYWORD_HPP

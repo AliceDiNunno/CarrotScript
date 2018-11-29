@@ -6,22 +6,13 @@
 
 struct ParsingTreeString: public ParsingTreeValue
 {
-    QString value;
+    ParsingTreeString();
 
-    ParsingTreeString()
-    {
-        debugName = "ParsingTreeString";
-    }
-
-    virtual ParsingTreeValue *execute(MemoryManagement *pMem)
-    {
-        executeNext(pMem);
-        return this;
-    }
-
-    static ParsingTreeString *makeString(QString v);
-
+    static ParsingTreeString *make(QString v);
+    virtual ParsingTreeValue *execute(MemoryManagement *pMem);
     virtual ParsingTreeValue* add(ParsingTreeValue* other);
+
+    QString value;
 };
 
 #endif // PARSINGTREESTRING_HPP

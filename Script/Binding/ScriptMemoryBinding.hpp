@@ -1,12 +1,12 @@
 #ifndef SCRIPTMEMORYBINDING_HPP
 #define SCRIPTMEMORYBINDING_HPP
 
-#include "../Types/ParsingTreeValue.hpp"
-#include "../Memory/ParsingTreeAccessor.hpp"
-
+struct ParsingTreeValue;
+struct ParsingTreeAccessor;
 class ScriptMemoryBinding
 {
 public:
+    virtual ~ScriptMemoryBinding();
     virtual ParsingTreeValue *readValue(ParsingTreeAccessor *) = 0;
     virtual void setValue(ParsingTreeAccessor *name, ParsingTreeValue *) = 0;
 };

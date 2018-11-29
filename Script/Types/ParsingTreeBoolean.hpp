@@ -2,12 +2,9 @@
 #define PARSINGTREEBOOLEAN_HPP
 
 #include "ParsingTreeValue.hpp"
-#include "ParsingTreeInteger.hpp"
 
 struct ParsingTreeBoolean: public ParsingTreeValue
 {
-    bool value;
-
     ParsingTreeBoolean();
 
     static ParsingTreeBoolean *make(bool v);
@@ -16,6 +13,8 @@ struct ParsingTreeBoolean: public ParsingTreeValue
     virtual ParsingTreeValue* remove(ParsingTreeValue* other);
     virtual ParsingTreeValue* divide(ParsingTreeValue* other);
     virtual ParsingTreeValue* multiply(ParsingTreeValue* other);
+
+    bool value;
 };
 
 #endif // PARSINGTREEBOOLEAN_HPP

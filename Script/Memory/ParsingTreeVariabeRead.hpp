@@ -7,20 +7,10 @@
 
 struct ParsingTreeVariabeRead: public ParsingTreeValue
 {
+    ParsingTreeVariabeRead();
+    ParsingTreeValue *execute(MemoryManagement *pMemory);
 
     ParsingTreeAccessor *id;
-
-    ParsingTreeVariabeRead()
-    {
-        debugName = "ParsingTreeVariabeRead";
-    }
-
-    ParsingTreeValue *execute(MemoryManagement *pMemory)
-    {
-//        qDebug() << "READ";
-        executeNext(pMemory);
-        return pMemory->readValue(id);
-    }
 };
 
 #endif // PARSINGTREEVARIABEREAD_HPP

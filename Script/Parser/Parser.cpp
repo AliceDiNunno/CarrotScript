@@ -1,72 +1,27 @@
 #include "Parser.hpp"
 #include <QDebug>
 
-#include "../Exceptions/UnknownTokenException.hpp"
+#include "ParsingTreeAssignment.hpp"
 #include "ParsingTreeCalculateValuePriority.hpp"
+#include "ParsingTreeCondition.hpp"
+#include "ParsingTreeEntryPoint.hpp"
+#include "ParsingTreeEntryPointPriority.hpp"
+#include "ParsingTreeFunctionCall.hpp"
+#include "ParsingTreeFunctionDeclaration.hpp"
+#include "../Exceptions/UnknownTokenException.hpp"
+#include "../Lexer/Lexer.hpp"
+#include "../Lexer/TokenStrings.hpp"
+#include "../Memory/ParsingTreeVariabeRead.hpp"
+#include "../Operations/ParsingTreeValueComparisonType.hpp"
+#include "../Operations/ParsingTreeOperationType.hpp"
 #include "../Operations/ParsingTreeOperation.hpp"
 #include "../Operations/ParsingTreeComparison.hpp"
-#include "ParsingTreeCondition.hpp"
+#include "../Types/ParsingTreeValueType.hpp"
+#include "../Types/ParsingTreeArray.hpp"
 #include "../Types/ParsingTreeString.hpp"
 #include "../Types/ParsingTreeInteger.hpp"
 #include "../Types/ParsingTreeFloat.hpp"
 #include "../Types/ParsingTreeBoolean.hpp"
-#include "../Operations/ParsingTreeOperationType.hpp"
-#include "ParsingTreeEntryPoint.hpp"
-#include "ParsingTreeEntryPointPriority.hpp"
-#include "../Types/ParsingTreeValueType.hpp"
-#include "../Operations/ParsingTreeValueComparisonType.hpp"
-#include "../Memory/ParsingTreeVariabeRead.hpp"
-
-bool isTokenEnter(TokenType t)
-{
-    return (t == T_EnterPriority || t == T_EnterArray || t == T_EnterDefineArray || t == T_EnterFunction);
-}
-
-bool isTokenExit(TokenType t)
-{
-    return (t == T_ExitPriority || t == T_ExitArray || t == T_ExitDefineArray || t == T_ExitFunction);
-}
-
-TokenType getEnterExitPair(TokenType t)
-{
-    if (t == T_EnterPriority)
-        return T_ExitPriority;
-    if (t == T_ExitPriority)
-        return T_EnterPriority;
-
-    if (t == T_EnterArray)
-        return T_ExitArray;
-    if (t == T_ExitArray)
-        return T_EnterArray;
-
-    if (t == T_EnterDefineArray)
-        return T_ExitDefineArray;
-    if (t == T_ExitDefineArray)
-        return T_EnterDefineArray;
-
-    if (t == T_EnterFunction)
-        return T_ExitFunction;
-    if (t == T_ExitFunction)
-        return T_EnterFunction;
-    return T_Unknown;
-}
-
-bool areTokenPair(TokenType a, TokenType b)
-{
-    if ((a == T_EnterPriority && b == T_ExitPriority) ||
-            (a == T_ExitPriority && b == T_EnterPriority))
-        return true;
-    if ((a == T_EnterArray && b == T_ExitArray) ||
-            (a == T_ExitArray && b == T_EnterArray))
-        return true;
-    if ((a == T_EnterDefineArray && b == T_ExitDefineArray) ||
-            (a == T_ExitDefineArray && b == T_EnterDefineArray))
-        return true;
-    if ((a == T_EnterFunction && b == T_ExitFunction) ||
-            (a == T_ExitFunction && b == T_EnterFunction))
-        return true;
-    return false;
-}
 
 Parser::Parser()
 {
@@ -99,23 +54,6 @@ ParsingTreeFunctionCall *Parser::makeFunctionCall(QList<Token> tokens)
     fnc->arguments = makeFunctionParameters(functionParameter);
 
     return fnc;
-}
-
-ParsingTreeAccessor *makeAccessorFromIdentifier(ParsingTreeIdentifier *ids)
-{
-    ParsingTreeAccessor *pta = dynamic_cast<ParsingTreeAccessor *>(ids);
-    if (!pta)
-    {
-        pta = new ParsingTreeAccessor();
-        pta->child = nullptr;
-        pta->fallback = ids->fallback;
-        pta->line = ids->line;
-        pta->lineNumber = ids->lineNumber;
-        pta->name = ids->name;
-        pta->next = ids->next;
-        pta->success = ids->success;
-    }
-    return pta;
 }
 
 QList<ParsingTreeValue *> Parser::makeFunctionParameters(Token t)
@@ -182,8 +120,12 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
     ParsingTreeAccessor *accessor = makeAccessor(leftTokens);
 
 
-    //TODO: manage minus operator
-    if (token.content != "++" && token.content != "--" && token.content != "+=" && token.content != "-=" && token.content != "/=" && token.content != "*=")
+    if (token.content != CS_LEXER_PLUSPLUS_OPERATOR &&
+        token.content != CS_LEXER_MINUSMINUS_OPERATOR &&
+        token.content != CS_LEXER_PLUSEQUAL_OPERATOR &&
+        token.content != CS_LEXER_MINUSEQUAL_OPERATOR &&
+        token.content != CS_LEXER_DIVIDEEQUAL_OPERATOR &&
+        token.content != CS_LEXER_MULTIPLYEQUAL_OPERATOR)
     {
         QList<Token> rightTokens = tokens.mid(position + 1, tokens.count());
 
@@ -192,7 +134,8 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
         ass->symbol = token.content;
         ass->from = value;
     }
-    else if (token.content == "++" || token.content == "--")
+    else if (token.content == CS_LEXER_PLUSPLUS_OPERATOR ||
+             token.content == CS_LEXER_MINUSMINUS_OPERATOR)
     {
         Token tok;
         tok.column = token.column;
@@ -207,19 +150,19 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
         /////////////////////
         QList<Token> rightTokens = tokens.mid(position + 1, tokens.count());
 
-        ass->symbol = "=";
+        ass->symbol = CS_LEXER_EQUAL_OPERATOR;
         Token tokOp;
         tokOp.column = token.column;
         tokOp.lineNumber = token.lineNumber;
         tokOp.lineStr = token.lineStr;
         tokOp.type = T_Operation;
-        if (token.content == "++")
+        if (token.content == CS_LEXER_PLUSPLUS_OPERATOR)
         {
-            tokOp.content = "+";
+            tokOp.content = CS_LEXER_PLUS_OPERATOR;
         }
-        else if (token.content == "--")
+        else if (token.content == CS_LEXER_MINUSMINUS_OPERATOR)
         {
-            tokOp.content = "-";
+            tokOp.content = CS_LEXER_MINUS_OPERATOR;
         }
         ass->from = makeOperation(leftTokens, tokOp, {tok});
 
@@ -228,29 +171,27 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
     {
         QList<Token> rightTokens = tokens.mid(position + 1, tokens.count());
 
-        ParsingTreeValue *value = makeValue(rightTokens);
-
-        ass->symbol = "=";
+        ass->symbol = CS_LEXER_EQUAL_OPERATOR;
         Token tok;
         tok.column = token.column;
         tok.lineNumber = token.lineNumber;
         tok.lineStr = token.lineStr;
         tok.type = T_Operation;
-        if (token.content == "+=")
+        if (token.content == CS_LEXER_PLUSEQUAL_OPERATOR)
         {
-            tok.content = "+";
+            tok.content = CS_LEXER_PLUS_OPERATOR;
         }
-        else if (token.content == "-=")
+        else if (token.content == CS_LEXER_MINUSEQUAL_OPERATOR)
         {
-            tok.content = "-";
+            tok.content = CS_LEXER_MINUS_OPERATOR;
         }
-        else if (token.content == "/=")
+        else if (token.content == CS_LEXER_DIVIDEEQUAL_OPERATOR)
         {
-            tok.content = "/";
+            tok.content = CS_LEXER_DIVIDE_OPERATOR;
         }
-        else if (token.content == "*=")
+        else if (token.content == CS_LEXER_MULTIPLYEQUAL_OPERATOR)
         {
-            tok.content = "*";
+            tok.content = CS_LEXER_MULTIPLY_OPERATOR;
         }
         ass->from = makeOperation(leftTokens, tok, rightTokens);
     }
@@ -258,6 +199,39 @@ ParsingTreeAssignment *Parser::makeAssignment(QList<Token> tokens, int position)
     ass->to = accessor;
 
     return ass;
+}
+
+ParsingTreeAccessor *Parser::makeAccessorFromIdentifier(ParsingTreeIdentifier *ids)
+{
+    ParsingTreeAccessor *pta = dynamic_cast<ParsingTreeAccessor *>(ids);
+    if (!pta)
+    {
+        pta = new ParsingTreeAccessor();
+        pta->child = nullptr;
+        pta->fallback = ids->fallback;
+        pta->line = ids->line;
+        pta->lineNumber = ids->lineNumber;
+        pta->name = ids->name;
+        pta->next = ids->next;
+        pta->success = ids->success;
+    }
+    return pta;
+}
+
+ParsingTreeOperationType operationFromToken(Token tkn)
+{
+    if (tkn.content == CS_LEXER_PLUS_OPERATOR)
+        return PTOT_Add;
+    else if (tkn.content == CS_LEXER_MINUS_OPERATOR)
+        return PTOT_Remove;
+    else if (tkn.content == CS_LEXER_MULTIPLY_OPERATOR)
+        return PTOT_Multiply;
+    else if (tkn.content == CS_LEXER_DIVIDE_OPERATOR)
+        return PTOT_Divide;
+    else
+    {
+        return PTOT_Unknown;
+    }
 }
 
 ParsingTreeAccessor *Parser::makeAccessor(QList<Token> tokens)
@@ -290,40 +264,6 @@ ParsingTreeAccessor *Parser::makeAccessor(QList<Token> tokens)
         lastType = t.type;
     }
     return accessor;
-}
-
-ParsingTreeCalculateValuePriority getPrecedence(Token t)
-{
-    if (t.type == T_EnterPriority)
-        return PTCVP_Parenthesis;
-    else if (t.type == T_Operation && (t.content == "+" || t.content == "-"))
-        return PTCVP_PlusMinus;
-    else if (t.type == T_Operation && (t.content == "*" || t.content == "/"))
-        return PTCVP_MultiplyDivide;
-    else if (t.type == T_Comparison && t.content == "&&")
-        return PTCVP_And;
-    else if (t.type == T_Comparison && t.content == "||")
-        return PTCVP_Or;
-    else if (t.type == T_Comparison)
-        return PTCVP_Comparison;
-    return PTCVP_Unsupported;
-}
-
-bool isFunction(QList<Token> tokens)
-{
-    for (int iToken = 0; iToken < tokens.count(); iToken++)
-    {
-        Token tok = tokens.at(iToken);
-        if (tok.type == T_Identifier || tok.type == T_ModuleAccess || tok.type == T_EnterArray)
-        {
-            continue;
-        }
-        if (iToken + 1 == tokens.count() && tokens.at(iToken).type == T_EnterFunction)
-        {
-            return true;
-        }
-    }
-    return false;
 }
 
 ParsingTreeArray *Parser::makeArray(QList<Token> tokens)
@@ -392,8 +332,8 @@ ParsingTreeValue *Parser::makeValue(QList<Token> tokens)
         Token currentToken = tokens.at(iToken);
 
         //qDebug() << "check " << currentToken.content << tts(currentToken.type);
-        ParsingTreeCalculateValuePriority precedence = getPrecedence(currentToken);
-        if (currentToken.type == T_Comparison && currentToken.content == "!")
+        ParsingTreeCalculateValuePriority precedence = getPrecedenceFromToken(currentToken);
+        if (currentToken.type == T_Comparison && currentToken.content == CS_LEXER_NOT_OPERATOR)
             continue;
 
         if (precedence == PTCVP_Unsupported)
@@ -409,7 +349,7 @@ ParsingTreeValue *Parser::makeValue(QList<Token> tokens)
 
     if (lessPrioritizedItemIndex == -1 && tokens.count() > 0)
     {
-        if (isFunction(tokens))
+        if (Lexer::isFunction(tokens))
         {
             return makeFunctionCall(tokens);
         }
@@ -439,46 +379,6 @@ ParsingTreeValue *Parser::makeValue(QList<Token> tokens)
     }
 }
 
-ParsingTreeOperationType operationFromToken(Token tkn)
-{
-    if (tkn.content == "+")
-        return PTOT_Add;
-    else if (tkn.content == "-")
-        return PTOT_Remove;
-    else if (tkn.content == "*")
-        return PTOT_Multiply;
-    else if (tkn.content == "/")
-        return PTOT_Divide;
-    else
-    {
-        return PTOT_Unknown;
-    }
-}
-
-ParsingTreeValueComparisonType comparisonFromToken(Token tkn)
-{
-    if (tkn.content == "==")
-        return PTVCT_Equals;
-    else if (tkn.content == "!=")
-        return PTVCT_NotEquals;
-    else if (tkn.content == ">")
-        return PTVCT_BiggerThan;
-    else if (tkn.content == "<")
-        return PTVCT_SmallerThan;
-    else if (tkn.content == ">=")
-        return PTVCT_BiggerOrEqualsThan;
-    else if (tkn.content == "<=")
-        return PTVCT_SmallerOrEqualsThan;
-    else if (tkn.content == "&&")
-        return PTVCT_And;
-    else if (tkn.content == "||")
-        return PTVCT_Or;
-    else
-    {
-        return PTVCT_Unknown;
-    }
-}
-
 ParsingTreeValue *Parser::makeOperation(QList<Token> left, Token operation, QList<Token> right)
 {
     ParsingTreeOperation *op = new ParsingTreeOperation();
@@ -495,7 +395,7 @@ ParsingTreeValue *Parser::makeComparison(QList<Token> left, Token operation, QLi
     ParsingTreeComparison *cmp = new ParsingTreeComparison();
 
     cmp->left = makeValue(left);
-    cmp->type = comparisonFromToken(operation);
+    cmp->type = comparisonTypeFromToken(operation);
     cmp->right = makeValue(right);
 
     return cmp;
@@ -524,37 +424,20 @@ ParsingTreeValue *Parser::makeLitteral(Token t)
     if (t.type == T_BoolLitteral)
     {
         ParsingTreeBoolean *bln = new ParsingTreeBoolean();
-        bln->value = t.content == "true";
+        bln->value = (t.content == CS_LEXER_TRUE_BOOL);
         return bln;
     }
     return nullptr;
-}
-
-ParsingTreeKeywordType getType(QByteArray keyword)
-{
-    if (keyword == "if")
-        return PTKT_If;
-    else if (keyword == "else")
-        return PTKT_Else;
-    else if (keyword == "while")
-        return PTKT_While;
-    else if (keyword == "end")
-        return PTKT_End;
-    else if (keyword == "require")
-        return PTKT_Require;
-    else if (keyword == "return")
-        return PTKT_Return;
-    return PTKT_Unknown;
 }
 
 ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
 {
     ParsingTreeKeyword *keyword = new ParsingTreeKeyword();
 
-    keyword->type = getType(tokens.at(0).content);
+    keyword->type = getKeywordType(tokens.at(0).content);
     tokens = tokens.mid(1, tokens.count());
 
-    if (tokens.count() == 1 && tokens.at(0).subTokens.count() > 0 && tokens.at(0).content == "()")
+    if (tokens.count() == 1 && tokens.at(0).subTokens.count() > 0 && tokens.at(0).content == CS_LEXER_FUNCTION_SEPARATOR)
         tokens = tokens.at(0).subTokens;
 
     if ((keyword->type == PTKT_Else || keyword->type == PTKT_End) && tokens.count() > 0)
@@ -565,7 +448,7 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
     if (keyword->type == PTKT_If || keyword->type == PTKT_While)
     {
         bool invertCondition = false;
-        if (tokens.count() > 1 && tokens.at(0).content == "!" && tokens.at(0).type == T_Comparison)
+        if (tokens.count() > 1 && tokens.at(0).content == CS_LEXER_NOT_OPERATOR && tokens.at(0).type == T_Comparison)
         {
             invertCondition = true;
             tokens.removeFirst();
@@ -586,7 +469,6 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
         {
             ptc->successOnFailure = invertCondition;
             ((ParsingTreeCondition *)keyword)->condition = ptc;
-//            qDebug() << "COMPARISON OK";
         }
         else if (ptb)
         {
@@ -598,7 +480,6 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
             ptc->right = ptbb;
             ptc->type = PTVCT_Equals;
             ((ParsingTreeCondition *)keyword)->condition = ptc;
-//            qDebug() << "BOOL OK";
         }
         else if (ptr)
         {
@@ -610,7 +491,6 @@ ParsingTreeKeyword *Parser::makeKeyword(QList<Token> tokens)
             ptc->right = ptbb;
             ptc->type = PTVCT_Equals;
             ((ParsingTreeCondition *)keyword)->condition = ptc;
-//            qDebug() << "VAR OK";
         }
         else
         {
@@ -646,7 +526,7 @@ ParsingTreeEntryPoint *Parser::getEntryPoint(QList<Token> tokens, int pos)
             //TODO err because keyword can't be preceded
         }
 
-        if (entryPointToken.content == "func")
+        if (entryPointToken.content == CS_LEXER_FUNC_KEYWORD)
         {
             ptep = makeFunctionDeclaration(tokens);
         }
@@ -686,28 +566,19 @@ int Parser::findEntryPoint(QList<Token> tokens)
     return entryPointPosition;
 }
 
-QByteArray contentForType(Token t)
-{
-    if (t.type == T_EnterDefineArray || t.type == T_EnterArray)
-        return "[]";
-    if (t.type == T_EnterFunction || t.type == T_EnterPriority)
-        return "()";
-    return "";
-}
-
 QList<Token> Parser::createTokenGroups(QList<Token> tokens, int *start)
 {
     QList<Token> tk;
     while ((*start) < tokens.count())
     {
         Token t = tokens.at(*start);
-        if (isTokenEnter(t.type))
+        if (Lexer::isTokenEnter(t.type))
         {
             (*start)++;
 
             Token separator;
             separator.type = t.type;
-            separator.content = contentForType(t);
+            separator.content = contentFromTokenType(t.type);
             separator.lineNumber = t.lineNumber;
             separator.lineStr = t.lineStr;
             separator.column = t.column;
@@ -718,7 +589,7 @@ QList<Token> Parser::createTokenGroups(QList<Token> tokens, int *start)
         else
         {
             (*start)++;
-            if (isTokenExit(t.type))
+            if (Lexer::isTokenExit(t.type))
             {
                 return tk;
             }
@@ -728,8 +599,7 @@ QList<Token> Parser::createTokenGroups(QList<Token> tokens, int *start)
     return tk;
 }
 
-ParsingTreeEntryPoint *joinKeyword(QList<ParsingTreeEntryPoint *> eps, int *from);
-ParsingTreeEntryPoint *joinCondition(QList<ParsingTreeEntryPoint *> eps, int *from)
+ParsingTreeEntryPoint *Parser::joinCondition(QList<ParsingTreeEntryPoint *> eps, int *from)
 {
     ParsingTreeCondition *currentCondition = dynamic_cast<ParsingTreeCondition *>(eps.at(*from));
     (*from)++;
@@ -790,14 +660,16 @@ ParsingTreeEntryPoint *joinCondition(QList<ParsingTreeEntryPoint *> eps, int *fr
     return currentCondition;
 }
 
-ParsingTreeEntryPoint *joinFunctionDeclaration(QList<ParsingTreeEntryPoint *> eps, int *from)
+ParsingTreeEntryPoint *Parser::joinFunctionDeclaration(QList<ParsingTreeEntryPoint *> eps, int *from)
 {
+    Q_UNUSED(from);
+
     ParsingTreeFunctionDeclaration *currentFunction = dynamic_cast<ParsingTreeFunctionDeclaration *>(eps.at(0));
 
     return currentFunction;
 }
 
-ParsingTreeEntryPoint *joinKeyword(QList<ParsingTreeEntryPoint *> eps, int *from)
+ParsingTreeEntryPoint *Parser::joinKeyword(QList<ParsingTreeEntryPoint *> eps, int *from)
 {
     ParsingTreeKeyword *pCurrentEntryPoint = dynamic_cast<ParsingTreeKeyword *>(eps.at(*from));
 
@@ -811,50 +683,16 @@ ParsingTreeEntryPoint *joinKeyword(QList<ParsingTreeEntryPoint *> eps, int *from
     return nullptr;
 }
 
-static int level = 0;
-
-QString fill()
-{
-    QString t;
-    t.fill(' ', level * 4);
-    return t;
-}
-
-void debugIt(ParsingTreeExecutable *ptep)
-{
-    ParsingTreeExecutable *pttep = ptep;
-    while (pttep)
-    {
-        qDebug() << fill() + pttep->line;
-        if (pttep->success)
-        {
-            level++;
-            debugIt(pttep->success);
-            level--;
-        }
-        if (pttep->fallback)
-        {
-            qDebug() << fill() + "else";
-            level++;
-            debugIt(pttep->fallback);
-            level--;
-        }
-        pttep = pttep->next;
-    }
-}
-
 ParsingTreeEntryPoint *Parser::join(QList<ParsingTreeEntryPoint *> eps)
 {
     ParsingTreeEntryPoint *pLastEntryPoint = eps.at(0);
     for (int i = 0; i < eps.count(); i++)
     {
-//        qDebug() << eps.at(i)->line;
         ParsingTreeEntryPoint *pCurrentEntryPoint = eps.at(i);
         if (pCurrentEntryPoint)
         {
             if (dynamic_cast<ParsingTreeFunctionDeclaration *>(pCurrentEntryPoint))
             {
-//                qDebug() << "FUNCDEC " << pCurrentEntryPoint->line;
                 ParsingTreeEntryPoint *decl;
                 decl = joinFunctionDeclaration(eps, &i);
 
@@ -864,7 +702,6 @@ ParsingTreeEntryPoint *Parser::join(QList<ParsingTreeEntryPoint *> eps)
             }
             else if (dynamic_cast<ParsingTreeKeyword *>(pCurrentEntryPoint))
             {
-//                qDebug() << "KEYWORD " << pCurrentEntryPoint->line;
                 pCurrentEntryPoint = joinKeyword(eps, &i);
 
                 pLastEntryPoint->next = pCurrentEntryPoint;
@@ -872,7 +709,6 @@ ParsingTreeEntryPoint *Parser::join(QList<ParsingTreeEntryPoint *> eps)
                 continue;
             }
 
-//            qDebug() << "OTHER: " << pCurrentEntryPoint->line;
             if (pCurrentEntryPoint != pLastEntryPoint)
             {
                 pLastEntryPoint->next = pCurrentEntryPoint;
@@ -880,7 +716,6 @@ ParsingTreeEntryPoint *Parser::join(QList<ParsingTreeEntryPoint *> eps)
             }
         }
     }
-   // debugIt(eps.first());
     return eps.first();
 }
 

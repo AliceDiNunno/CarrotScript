@@ -6,12 +6,8 @@
 struct ParsingTreeEntryPoint: ParsingTreeValue
 {
 public:
-    virtual ~ParsingTreeEntryPoint() {}
-
-    ParsingTreeEntryPoint()
-    {
-        debugName = "ParsingTreeEntryPoint";
-    }
+    ParsingTreeEntryPoint();
+    virtual ~ParsingTreeEntryPoint();
 };
 
 

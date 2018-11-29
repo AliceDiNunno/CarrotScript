@@ -1,21 +1,30 @@
 #include "MemoryManagement.hpp"
 
+#include "../Exceptions/BadAccessorException.hpp"
+#include "../Exceptions/UnknownVariableException.hpp"
 #include "../Types/ParsingTreeBoolean.hpp"
 #include "../Types/ParsingTreeString.hpp"
 #include "../Types/ParsingTreeInteger.hpp"
 #include "../Types/ParsingTreeArray.hpp"
 #include "../Types/ParsingTreeFloat.hpp"
-#include "ParsingTreeVariabeRead.hpp"
 #include "../Operations/ParsingTreeOperation.hpp"
+#include "ParsingTreeVariabeRead.hpp"
 
 MemoryManagement::MemoryManagement()
 {
-    scopes.append(new QList<ScriptVariable *>());
+    reset();
 }
 
 MemoryManagement::~MemoryManagement()
 {
 
+}
+
+void MemoryManagement::reset()
+{
+    scopes = QList<QList<ScriptVariable *> *>();
+    bindings = QMap<QByteArray, ScriptClassBinding *>();
+    scopes.append(new QList<ScriptVariable *>());
 }
 
 ParsingTreeValue *MemoryManagement::readChild(ParsingTreeAccessor *accs, ParsingTreeValue *pValue)
@@ -32,13 +41,11 @@ ParsingTreeValue *MemoryManagement::readChild(ParsingTreeAccessor *accs, Parsing
         {
             return (pta->values.at(pti->value));
         }
-        //err (unsupported)
-        return nullptr;
+        throw BadAccessorException(pChild->debugName + " child accessor is unsupported", "", accs->line, accs->lineNumber, -1);
     }
     else
     {
-        //err (unsupported)
-        return nullptr;
+        throw BadAccessorException(pValue->debugName + " accessor is unsupported", "", accs->line, accs->lineNumber, -1);
     }
 }
 
@@ -69,15 +76,13 @@ ParsingTreeValue *MemoryManagement::readValue(ParsingTreeAccessor *name)
     }
     if (vp == nullptr)
     {
-        emit info(QString("Fetch unknown (%1)").arg(varName));
-        return nullptr;
+        throw UnknownVariableException(varName + " is undefined", "", name->line, name->lineNumber, -1);
     }
     if (name->child == nullptr)
         return vp;
     return readChild(name, vp);
 }
 
-// TODO: accessor and identifier
 // TODO: Check For Functions
 ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeIdentifier *ids, QList<ParsingTreeValue *> args)
 {
@@ -96,7 +101,6 @@ ParsingTreeValue *MemoryManagement::callFunction(ParsingTreeIdentifier *ids, QLi
                 if (ParsingTreeOperation *pto = dynamic_cast<ParsingTreeOperation *>(pCurrentValue))
                 {
                     ParsingTreeValue *ptv = pto->execute(this);
-                    //qDebug() << "PTV" << translateValue(ptv);
                     ptvlist << translateValue(ptv);
                 }
                 else if(ParsingTreeAccessor *pta = dynamic_cast<ParsingTreeAccessor *>(pCurrentValue))
@@ -176,11 +180,9 @@ QVariant MemoryManagement::translateValue(ParsingTreeValue *val)
     }
     else
     {
-        return "{{{{error}}}}";
+        return QVariant();
         //err
     }
-
-    return QVariant();
 }
 
 void MemoryManagement::insert(ScriptVariable sv)
@@ -212,13 +214,12 @@ void MemoryManagement::insert(ScriptVariable sv)
 
 void MemoryManagement::enterScope()
 {
+    qDebug() << "enter scope";
     scopes.append(new QList<ScriptVariable *>());
-    qDebug() << (QString("Enter scope: %1").arg(scopes.count()));
 }
 
 void MemoryManagement::exitScope()
 {
-    qDebug() << (QString("Exit scope: %1").arg(scopes.count()));
     if (scopes.count() <= 1)
         qDebug() << ("CANNOT EXIT SCOPE"); //ERR
     else
